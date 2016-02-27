@@ -1,12 +1,12 @@
         .data
 buffer:	.space 256
-str000:	.asciiz	"Introduzca un nÃºmero (n) en base 10: "
+str000:	.asciiz	"Introduzca un número (n) en base 10: "
 str001:	.asciiz	": "
 str002:	.asciiz	"n en base "
 str003:	.asciiz	"\n"
         
         .text
-# mueve la lÃ­nea siguiente justo antes de la versiÃ³n que desees probar
+# mueve la línea siguiente justo antes de la versión que desees probar
 integer_to_string:
 integer_to_string_v0:			# ($a0, $a1, $a2) = (n, base, buf)
         move    $t0, $a2		# char *p = buff
@@ -44,7 +44,7 @@ integer_to_string_v4:			# ($a0, $a1, $a2) = (n, base, buf)
         break
         jr	$ra
 
-# Imprime el nÃºmero recibido en base 10 seguido de un salto de linea
+# Imprime el número recibido en base 10 seguido de un salto de linea
 test1:					# $a0 = n
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -59,7 +59,7 @@ test1:					# $a0 = n
 	addiu	$sp, $sp, 4
 	jr	$ra
 
-# Imprime el nÃºmero recibido en todas las bases entre 2 y 36
+# Imprime el número recibido en todas las bases entre 2 y 36
 test2:					# $a0 = n
 	addiu	$sp, $sp, -12
 	sw	$ra, 8($sp)
@@ -102,7 +102,7 @@ main:
 	sw	$ra, 4($sp)
 	sw	$s0, 0($sp)
 	la	$a0, str000
-	jal	print_string		# print_string("Introduzca un nÃºmero (n) en base 10: ")
+	jal	print_string		# print_string("Introduzca un número (n) en base 10: ")
 	jal	read_integer
 	move	$s0, $v0		# int n = read_integer()
 	move	$a0, $s0

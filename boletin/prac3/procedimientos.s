@@ -1,5 +1,5 @@
-# Programa con procedimientos para mostrar c√≥mo realizar el paso de
-# par√°metros y el uso de la pila en distintas situaciones
+# Programa con procedimientos para mostrar cÛmo realizar el paso de
+# par·metros y el uso de la pila en distintas situaciones
         
         .data
 msg_cr: .asciiz "\n"
@@ -79,9 +79,9 @@ proc3:
         add     $v0, $a0, $a1
         add     $v0, $v0, $a2
         add     $v0, $v0, $a3
-        lw      $t0, 0($sp)   # El quinto par√°metro est√° en la cima de la pila
+        lw      $t0, 0($sp)   # El quinto par·metro est· en la cima de la pila
         add     $v0, $v0, $t0
-        lw      $t1, 4($sp)   # Y el sexto par√°metro en la siguiente posici√≥n
+        lw      $t1, 4($sp)   # Y el sexto par·metro en la siguiente posiciÛn
         add     $v0, $v0, $t1
         jr      $ra
 
@@ -90,7 +90,7 @@ proc3:
 printlnInt:
         li $v0, 1 # el entero a imprimir ya se encuentra en $a0
         syscall
-        la $a0, msg_cr # direcci√≥n de la cadena "\n"
+        la $a0, msg_cr # direcciÛn de la cadena "\n"
         li $v0, 4
         syscall
         jr $ra
