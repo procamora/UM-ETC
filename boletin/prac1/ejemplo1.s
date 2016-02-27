@@ -2,8 +2,8 @@
 msg:    .asciiz "El resultado es "      # Cadena para imprimir
 msg_a:	.asciiz "Introduce el valor de a: "       # Cadena para imprimir
 msg_b:	.ascii "Introduce el valor de b: \0"      # Cadena para imprimir
-var_a:  .word   17                      # Variable inicializada a 17
-var_b:  .word   0x17                    # Variable inicializada a 23
+#var_a:  .word   17                      # Variable inicializada a 17
+#var_b:  .word   0x17                    # Variable inicializada a 23
 
         .text
 # Procedimiento principal
@@ -33,17 +33,20 @@ main:
         addi    $sp, $sp, 4     # Devuelve el espacio de pila usado
         jr      $ra
 
+#print string
 print:
         li      $v0, 4          # Codigo syscall para imprimir una cadena
         syscall                 # Imprime la cadena
 	jr	$ra
 
+#read integer
 read:
 	li	$v0, 5
 	syscall
-	move	$a0 $v0 
+	#move	$a0 $v0 
+	add	$a0, $v0, $zero
 	jr	$ra
-	#add $a0, $t0, $zero
+	
 
 # Procedimiento para imprimir un mensaje con el resultado. Imprime la
 # cadena msg seguida del valor que se le pasa como primer argumento (en $a0)
