@@ -100,7 +100,7 @@ integer_to_string_v3:
         li	$t2, 0
         addiu	$t2, $t2, '0'
         sb 	$t2, 0($t0)
-        j	B3_8
+        j	B3_10
 
 B3_3:  
 	blez	$t1, B3_6		# si i <= 0 salta el bucle
