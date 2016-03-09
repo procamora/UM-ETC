@@ -55,15 +55,12 @@ B1_8:
 	j	B1_8
 B1_10:	jr	$ra
 
-integer_to_string:
+
 integer_to_string_v2:           	# ($a0, $a1, $a2) = (n, base, buf)
-	la	$t7, '-'	# t7 = '-'
         move 	$t0, $a2		# char *p = buff
 	# for (int i = n; i > 0; i = i / base) {
-	abs	$t1, $a0
-        #move	$t1, $a0		# int i = n
-        #li	$t3, 0			# t3 = 0
-
+	abs	$t1, $a0	 	#move	$t1, $a0	# int i = n
+       
 B2_3:  
 	blez	$t1, B2_6		# si i <= 0 salta el bucle
 	div	$t1, $a1		# i / base
@@ -76,6 +73,7 @@ B2_3:
         # }
 
 B2_6:	bgtz	$a0, B2_7		# if(i<0)
+	la	$t7, '-'	# t7 = '-'
 	sb	$t7, 0($t0)
 	sb	$zero, 4($t0)		# *p = '\0'
 	j	B2_8			#else
@@ -92,10 +90,46 @@ B2_8:
 	j	B2_8
 B2_10:	jr	$ra
 
+integer_to_string:
 integer_to_string_v3:
-	# TODO
-        break
-        jr	$ra
+	
+        move 	$t0, $a2		# char *p = buff
+	# for (int i = n; i > 0; i = i / base) {
+	abs	$t1, $a0		#move	$t1, $a0		# int i = n
+        bnez	$t1, B3_3
+        li	$t2, 0
+        addiu	$t2, $t2, '0'
+        sb 	$t2, 0($t0)
+        j	B3_8
+
+B3_3:  
+	blez	$t1, B3_6		# si i <= 0 salta el bucle
+	div	$t1, $a1		# i / base
+	mflo	$t1			# i = i / base
+	mfhi	$t2			# d = i % base
+	addiu	$t2, $t2, '0'		# d + '0'
+	sb 	$t2, 0($t0)		# *p = $t2
+	addiu	$t0, $t0, 1		# ++p
+	j	B3_3			# sigue el bucle
+        # }
+
+B3_6:	bgtz	$a0, B3_7		# if(i<0)
+	la	$t7, '-'	# t7 = '-'
+	sb	$t7, 0($t0)
+	sb	$zero, 4($t0)		# *p = '\0'
+	j	B3_8			#else
+B3_7:	sb	$zero, 0($t0)		# *p = '\0'
+	sub	$t0, $t0, 1
+B3_8:
+	blt 	$t0, $a2, B3_10
+	lb	$t3, 0($a2)
+	lb	$t4, 0($t0)
+	sb	$t3, 0($t0)
+	sb	$t4, 0($a2)
+	add	$a2, $a2, 1
+	add	$t0 $t0, -1
+	j	B3_8
+B3_10:	jr	$ra
 
 integer_to_string_v4:			# ($a0, $a1, $a2) = (n, base, buf)
 	# TODO
