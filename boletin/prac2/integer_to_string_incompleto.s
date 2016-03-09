@@ -65,7 +65,7 @@ integer_to_string_v2:           	# ($a0, $a1, $a2) = (n, base, buf)
         #li	$t3, 0			# t3 = 0
 
 B2_3:  
-	blez	$t1, B2_7		# si i <= 0 salta el bucle
+	blez	$t1, B2_6		# si i <= 0 salta el bucle
 	div	$t1, $a1		# i / base
 	mflo	$t1			# i = i / base
 	mfhi	$t2			# d = i % base
@@ -75,9 +75,12 @@ B2_3:
 	j	B2_3			# sigue el bucle
         # }
 
-B2_7:	sb	$t7, 0($t0)
+B2_6:	bgtz	$a0, B2_7		# if(i<0)
+	sb	$t7, 0($t0)
 	sb	$zero, 4($t0)		# *p = '\0'
-	#sub	$t0, $t0, 1
+	j	B2_8			#else
+B2_7:	sb	$zero, 0($t0)		# *p = '\0'
+	sub	$t0, $t0, 1
 B2_8:
 	blt 	$t0, $a2, B2_10
 	lb	$t3, 0($a2)
