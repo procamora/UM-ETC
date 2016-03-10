@@ -119,12 +119,14 @@ B3_3:
 B3_6:	bgtz	$a0, B3_7		# if(i<0)
 	la	$t7, '-'	# t7 = '-'
 	sb	$t7, 0($t0)
-	sb	$zero, 4($t0)		# *p = '\0'
+	addiu	$t0, $t0, 1
+	sb	$zero, 0($t0)		# *p = '\0'
+	sub	$t0, $t0, 1
 	j	B3_8			#else
 B3_7:	sb	$zero, 0($t0)		# *p = '\0'
 	sub	$t0, $t0, 1
-B3_8:
-	blt 	$t0, $a2, B3_10
+	
+B3_8:	blt 	$t0, $a2, B3_10
 	lb	$t3, 0($a2)
 	lb	$t4, 0($t0)
 	sb	$t3, 0($t0)
