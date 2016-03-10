@@ -55,7 +55,7 @@ B1_8:
 	j	B1_8
 B1_10:	jr	$ra
 
-
+integer_to_string:
 integer_to_string_v2:           	# ($a0, $a1, $a2) = (n, base, buf)
         move 	$t0, $a2		# char *p = buff
 	# for (int i = n; i > 0; i = i / base) {
@@ -75,7 +75,9 @@ B2_3:
 B2_6:	bgtz	$a0, B2_7		# if(i<0)
 	la	$t7, '-'	# t7 = '-'
 	sb	$t7, 0($t0)
-	sb	$zero, 4($t0)		# *p = '\0'
+	addiu	$t0, $t0, 1
+	sb	$zero, 0($t0)		# *p = '\0'
+	sub	$t0, $t0, 1
 	j	B2_8			#else
 B2_7:	sb	$zero, 0($t0)		# *p = '\0'
 	sub	$t0, $t0, 1
@@ -90,7 +92,7 @@ B2_8:
 	j	B2_8
 B2_10:	jr	$ra
 
-integer_to_string:
+
 integer_to_string_v3:
 	
         move 	$t0, $a2		# char *p = buff
