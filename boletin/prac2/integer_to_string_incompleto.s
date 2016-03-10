@@ -100,6 +100,9 @@ integer_to_string_v3:
         li	$t2, 0
         addiu	$t2, $t2, '0'
         sb 	$t2, 0($t0)
+        addiu	$t0, $t0, 1		# no lo entiendo bien
+        sb	$zero, 0($t0)		# *p = '\0'
+        #sub	$t0, $t0, 1
         j	B3_10
 
 B3_3:  
