@@ -1,5 +1,5 @@
-# Programa con procedimientos para mostrar cómo realizar el paso de
-# parámetros y el uso de la pila en distintas situaciones
+# Programa con procedimientos para mostrar como realizar el paso de
+# parametros y el uso de la pila en distintas situaciones
         
         .data
 msg_cr: .asciiz "\n"
@@ -79,9 +79,9 @@ proc3:
         add     $v0, $a0, $a1
         add     $v0, $v0, $a2
         add     $v0, $v0, $a3
-        lw      $t0, 0($sp)   # El quinto parámetro está en la cima de la pila
+        lw      $t0, 0($sp)   # El quinto parametro esta en la cima de la pila
         add     $v0, $v0, $t0
-        lw      $t1, 4($sp)   # Y el sexto parámetro en la siguiente posición
+        lw      $t1, 4($sp)   # Y el sexto parametro en la siguiente posicion
         add     $v0, $v0, $t1
         jr      $ra
 
@@ -90,7 +90,7 @@ proc3:
 printlnInt:
         li $v0, 1 # el entero a imprimir ya se encuentra en $a0
         syscall
-        la $a0, msg_cr # dirección de la cadena "\n"
+        la $a0, msg_cr # direccion de la cadena "\n"
         li $v0, 4
         syscall
         jr $ra

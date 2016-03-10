@@ -23,37 +23,37 @@ enteros:
 cadena_resultado:
 	.space	256
 str000:
-	.asciiz		"Introduce el número de elementos del array: "
+	.asciiz		"Introduce el nimero de elementos del array: "
 str001:
-	.asciiz		"Error: el valor introducido para el número de elementos no está soportado."
+	.asciiz		"Error: el valor introducido para el numero de elementos no esta soportado."
 str002:
-	.asciiz		"Introduce el máximo valor absoluto aleatorio: "
+	.asciiz		"Introduce el maximo valor absoluto aleatorio: "
 str003:
-	.asciiz		"Error: el valor introducido para el máximo no está soportado."
+	.asciiz		"Error: el valor introducido para el maximo no esta soportado."
 str004:
-	.asciiz		"\Práctica 3 de ensamblador de ETC\n"
+	.asciiz		"\Practica 3 de ensamblador de ETC\n"
 str005:
 	.asciiz		"\nActualmente hay "
 str006:
-	.asciiz		" números en el vector: "
+	.asciiz		" numeros en el vector: "
 str007:
 	.asciiz		" "
 str008:
 	.asciiz		"\n"
 str009:
-	.asciiz		"\n 1 - Comparar los elementos del vector con un escalar\n 2 - Rellenar el vector con valores aleatorios\n 3 - Salir\n\nElige una opción: "
+	.asciiz		"\n 1 - Comparar los elementos del vector con un escalar\n 2 - Rellenar el vector con valores aleatorios\n 3 - Salir\n\nElige una opcion: "
 str010:
 	.asciiz		"Introduce el escalar con el que quieres comparar: "
 str011:
 	.asciiz		"El resultado de comparar cada elemento con el escalar es: "
 str012:
-	.asciiz		"¡Adiós!\n"
+	.asciiz		"�Adios!\n"
 str013:
-	.asciiz		"Opción incorrecta. Pulse cualquier tecla para seguir.\n"
+	.asciiz		"Opcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
 	.text	
 
-# random_int_max(max) devuelve un número aleatorio entre 0 y max-1 (inclusive)
+# random_int_max(max) devuelve un numero aleatorio entre 0 y max-1 (inclusive)
 random_int_max:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -70,13 +70,13 @@ compara_enteros:
 	break
 
 # compara_vector_con_escalar(escalar) compara los elementos del vector
-# global «enteros» con respecto al escalar recibido y almacena los
-# resultados en la cadena global «cadena_resultado».  Deberá
-# almacenar en la posición iésima de la cadena un caracter '<',
-# '=' o '>' si el elemento íesimo de «enteros» es menor, igual o
-# mayor respectivamente que «escalar». El array
-# «cadena_resultado» debe quedar como una cadena válida de la
-# misma logitud que «enteros» (debe acabar con '\0') */
+# global �enteros� con respecto al escalar recibido y almacena los
+# resultados en la cadena global �cadena_resultado�.  Debera
+# almacenar en la posicion iésima de la cadena un caracter '<',
+# '=' o '>' si el elemento n�esimo de �enteros� es menor, igual o
+# mayor respectivamente que �escalar�. El array
+# �cadena_resultado� debe quedar como una cadena valida de la
+# misma logitud que �enteros� (debe acabar con '\0') */
 compara_vector_con_escalar:
 	# TODO
 	break
