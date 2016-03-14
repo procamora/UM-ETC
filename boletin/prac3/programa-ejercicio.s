@@ -88,15 +88,17 @@ CE_ex:	jr	$ra
 # <<cadena_resultado>> debe quedar como una cadena valida de la
 # misma logitud que <<enteros>> (debe acabar con '\0') */
 compara_vector_con_escalar:
-	addi    $sp, $sp, -24
-	sw      $a0, 20($sp)
-	sw      $s7, 16($sp)
-	sw      $s2, 12($sp)
-        sw      $s1, 8($sp)
-        sw      $s0, 4($sp)
+	addi    $sp, $sp, -28
+	sw      $a0, 24($sp)	#
+	sw      $s7, 20($sp)	# enteros
+	sw      $s3, 16($sp)	# escalar
+	sw      $s2, 12($sp)	# cadena_resultado
+        sw      $s1, 8($sp)	# lon
+        sw      $s0, 4($sp) 	# i
         sw      $ra, 0($sp)
+	
+	move	$s3, $a0
 
-	#AÑADIR S6/S2 EN LA PILA
 	la	$s7, enteros
 	lw	$s1, 0($s7)		# int lon = enteros.tam;
 	
@@ -108,7 +110,7 @@ CS_for:	bgt	$s0, $s1, CS_fin	#for (int i = 0; i < lon; ++i) {
 	
 	#int c = compara_enteros(enteros.datos[i], escalar);
 	addi	$s1, $s1, 4		#entero + 4
-	move	$a1, $a0 
+	move	$a1, $s3
 	lw	$a0, 0($s1)
 	jal	compara_enteros
 	move	$t0, $v0		#int c
@@ -123,7 +125,7 @@ CS_mn:	bne    	$t0, -1, CS_sig		#if (c == -1) {
 
 	#cadena_resultado[i] = car;
 CS_sig:	addi	$s2, $s2, 1
-	sb 	$s2, 0($t1)
+	sb 	$t1, 0($s2)
 	
 	
 	j	CS_for
