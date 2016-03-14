@@ -47,7 +47,7 @@ str010:
 str011:
 	.asciiz		"El resultado de comparar cada elemento con el escalar es: "
 str012:
-	.asciiz		"¡Adios!\n"
+	.asciiz		"Adios!\n"
 str013:
 	.asciiz		"Opcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
@@ -66,20 +66,79 @@ random_int_max:
 
 # compara_enteros(a, b) devuelve -1 si a < b, 0 si a == b y 1 si a > b 
 compara_enteros:
-	# TODO
-	break
+	beq	$a0, $a1, CE_eq
+	blt	$a0, $a1, CE_less
+	li	$v0, 1
+	j	CE_ex
+	
+CE_eq:	li	$v0, 0
+	j	CE_ex
+	
+CE_less:	li	$v0, -1
+	
+CE_ex:	jr	$ra	
+	
 
 # compara_vector_con_escalar(escalar) compara los elementos del vector
-# global «enteros» con respecto al escalar recibido y almacena los
-# resultados en la cadena global «cadena_resultado».  Debera
+# global ï¿½enterosï¿½ con respecto al escalar recibido y almacena los
+# resultados en la cadena global ï¿½cadena_resultadoï¿½.  Debera
 # almacenar en la posicion iÃ©sima de la cadena un caracter '<',
-# '=' o '>' si el elemento n­esimo de «enteros» es menor, igual o
-# mayor respectivamente que «escalar». El array
-# «cadena_resultado» debe quedar como una cadena valida de la
-# misma logitud que «enteros» (debe acabar con '\0') */
+# '=' o '>' si el elemento iesimo de ï¿½enterosï¿½ es menor, igual o
+# mayor respectivamente que ï¿½escalarï¿½. El array
+# <<cadena_resultado>> debe quedar como una cadena valida de la
+# misma logitud que <<enteros>> (debe acabar con '\0') */
 compara_vector_con_escalar:
-	# TODO
-	break
+	addi    $sp, $sp, -24
+	sw      $a0, 20($sp)
+	sw      $s7, 16($sp)
+	sw      $s2, 12($sp)
+        sw      $s1, 8($sp)
+        sw      $s0, 4($sp)
+        sw      $ra, 0($sp)
+
+	#AÃ‘ADIR S6/S2 EN LA PILA
+	la	$s7, enteros
+	lw	$s1, 0($s7)		# int lon = enteros.tam;
+	
+	la	$s2, cadena_resultado
+
+	
+CS_for:	bgt	$s0, $s1, CS_fin	#for (int i = 0; i < lon; ++i) {
+	addi	$s0, $s0, 1		#++i
+	
+	#int c = compara_enteros(enteros.datos[i], escalar);
+	addi	$s1, $s1, 4		#entero + 4
+	move	$a1, $a0 
+	lw	$a0, 0($s1)
+	jal	compara_enteros
+	move	$t0, $v0		#int c
+	li	$t1, '='		#char car = '=';
+	
+	bne    	$t0, 1, CS_mn		# if (c == 1) {
+	li	$t1, '>'
+
+CS_mn:	bne    	$t0, -1, CS_sig		#if (c == -1) {
+	li	$t1, '<'
+
+
+	#cadena_resultado[i] = car;
+CS_sig:	addi	$s2, $s2, 1
+	sb 	$s2, 0($t1)
+	
+	
+	j	CS_for
+CS_fin:
+
+	sb	$zero, 0($s2)		#cadena_resultado[lon] = '\0';
+        
+        lw      $a0, 20($sp)
+        lw      $s7, 16($sp)
+        lw      $s2, 12($sp)
+        lw      $s1, 8($sp)
+        lw      $s0, 4($sp)
+        lw      $ra, 0($sp)
+	addi    $sp, $sp, 20
+	jr	$ra
         
 inicializa_vector:
 	# TODO
