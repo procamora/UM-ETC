@@ -22,34 +22,20 @@ enteros:
         .space	956	# (255 - 16) elementos de 4 bytes
 cadena_resultado:
 	.space	256
-str000:
-	.asciiz		"Introduce el nimero de elementos del array: "
-str001:
-	.asciiz		"Error: el valor introducido para el numero de elementos no esta soportado."
-str002:
-	.asciiz		"Introduce el maximo valor absoluto aleatorio: "
-str003:
-	.asciiz		"Error: el valor introducido para el maximo no esta soportado."
-str004:
-	.asciiz		"\Practica 3 de ensamblador de ETC\n"
-str005:
-	.asciiz		"\nActualmente hay "
-str006:
-	.asciiz		" numeros en el vector: "
-str007:
-	.asciiz		" "
-str008:
-	.asciiz		"\n"
-str009:
-	.asciiz		"\n 1 - Comparar los elementos del vector con un escalar\n 2 - Rellenar el vector con valores aleatorios\n 3 - Salir\n\nElige una opcion: "
-str010:
-	.asciiz		"Introduce el escalar con el que quieres comparar: "
-str011:
-	.asciiz		"El resultado de comparar cada elemento con el escalar es: "
-str012:
-	.asciiz		"Adios!\n"
-str013:
-	.asciiz		"Opcion incorrecta. Pulse cualquier tecla para seguir.\n"
+str000:	.asciiz		"Introduce el nimero de elementos del array: "
+str001:	.asciiz		"Error: el valor introducido para el numero de elementos no esta soportado."
+str002:	.asciiz		"Introduce el maximo valor absoluto aleatorio: "
+str003:	.asciiz		"Error: el valor introducido para el maximo no esta soportado."
+str004:	.asciiz		"\Practica 3 de ensamblador de ETC\n"
+str005:	.asciiz		"\nActualmente hay "
+str006:	.asciiz		" numeros en el vector: "
+str007:	.asciiz		" "
+str008:	.asciiz		"\n"
+str009:	.asciiz		"\n 1 - Comparar los elementos del vector con un escalar\n 2 - Rellenar el vector con valores aleatorios\n 3 - Salir\n\nElige una opcion: "
+str010:	.asciiz		"Introduce el escalar con el que quieres comparar: "
+str011:	.asciiz		"El resultado de comparar cada elemento con el escalar es: "
+str012:	.asciiz		"Adios!\n"
+str013:	.asciiz		"Opcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
 	.text	
 
@@ -67,29 +53,29 @@ random_int_max:
 # compara_enteros(a, b) devuelve -1 si a < b, 0 si a == b y 1 si a > b 
 compara_enteros:
 	beq	$a0, $a1, CE_eq
-	blt	$a0, $a1, CE_less
+	blt	$a0, $a1, CE_les
 	li	$v0, 1
 	j	CE_ex
 	
 CE_eq:	li	$v0, 0
 	j	CE_ex
 	
-CE_less:	li	$v0, -1
+CE_les:	li	$v0, -1
 	
 CE_ex:	jr	$ra	
 	
 
 # compara_vector_con_escalar(escalar) compara los elementos del vector
-# global �enteros� con respecto al escalar recibido y almacena los
-# resultados en la cadena global �cadena_resultado�.  Debera
+# global <<enteros>> con respecto al escalar recibido y almacena los
+# resultados en la cadena global <<cadena_resultado>>.  Debera
 # almacenar en la posicion iésima de la cadena un caracter '<',
-# '=' o '>' si el elemento iesimo de �enteros� es menor, igual o
-# mayor respectivamente que �escalar�. El array
+# '=' o '>' si el elemento iesimo de <<enteros>> es menor, igual o
+# mayor respectivamente que <<escalar>>. El array
 # <<cadena_resultado>> debe quedar como una cadena valida de la
 # misma logitud que <<enteros>> (debe acabar con '\0') */
 compara_vector_con_escalar:
 	addi    $sp, $sp, -28
-	sw      $a0, 24($sp)	#
+	sw      $a0, 24($sp)	# escalar
 	sw      $s7, 20($sp)	# enteros
 	sw      $s3, 16($sp)	# escalar
 	sw      $s2, 12($sp)	# cadena_resultado
@@ -101,15 +87,24 @@ compara_vector_con_escalar:
 
 	la	$s7, enteros
 	lw	$s1, 0($s7)		# int lon = enteros.tam;
+	lw	$s6, 0($s7)		# BORRAR
 	
 	la	$s2, cadena_resultado
+	
+	li	$s0, 0 			# i=0
+	
+	######################
+	#lw	$s1, 4($s7)
+	#lw	$s1, 8($s7)
+	#j	CS_fin
+	######################
 
 	
-CS_for:	bgt	$s0, $s1, CS_fin	#for (int i = 0; i < lon; ++i) {
+CS_for:	bgt	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	addi	$s0, $s0, 1		#++i
 	
 	#int c = compara_enteros(enteros.datos[i], escalar);
-	addi	$s1, $s1, 4		#entero + 4
+	add	$s1, $s7, 4		#entero + 4
 	move	$a1, $s3
 	lw	$a0, 0($s1)
 	jal	compara_enteros
@@ -125,21 +120,21 @@ CS_mn:	bne    	$t0, -1, CS_sig		#if (c == -1) {
 
 	#cadena_resultado[i] = car;
 CS_sig:	addi	$s2, $s2, 1
-	sb 	$t1, 0($s2)
-	
-	
-	j	CS_for
-CS_fin:
+	sb 	$t1, 0($s2)	
+	j	CS_for 			# }
 
-	sb	$zero, 0($s2)		#cadena_resultado[lon] = '\0';
-        
-        lw      $a0, 20($sp)
-        lw      $s7, 16($sp)
+CS_fin:
+	# en vez de poner addi	$s2, $s2, 1 creo que puedo acceder directamente al siguiente, REVISAR
+	sb	$zero, 1($s2)		#cadena_resultado[lon] = '\0';
+	
+        lw      $a0, 24($sp)
+        lw      $s7, 20($sp)
+        lw      $s3, 16($sp)
         lw      $s2, 12($sp)
         lw      $s1, 8($sp)
         lw      $s0, 4($sp)
         lw      $ra, 0($sp)
-	addi    $sp, $sp, 20
+	addi    $sp, $sp, 28
 	jr	$ra
         
 inicializa_vector:
@@ -196,12 +191,12 @@ B4_7:	la	$a0, str012
 	jal	mips_exit
 	j	B4_2
 B4_8:	bne	$s1, '1', B4_10
-	la	$a0, str010
+	la	$a0, str010		# Introduce el escalar con el que quieres comparar: 
 	jal	print_string
 	jal	read_integer
 	move	$a0, $v0
 	jal	compara_vector_con_escalar
-	la	$a0, str011
+	la	$a0, str011		# El resultado de comparar cada elemento con el escalar es: 
 	jal	print_string
 	la	$a0, cadena_resultado
 	jal	print_string
