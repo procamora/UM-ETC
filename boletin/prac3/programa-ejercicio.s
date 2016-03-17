@@ -75,7 +75,7 @@ CE_ex:	jr	$ra
 # misma logitud que <<enteros>> (debe acabar con '\0') */
 compara_vector_con_escalar:
 	addi    $sp, $sp, -28
-	sw      $a0, 24($sp)	# escalar
+	sw      $s6, 24($sp)	# escalar
 	sw      $s7, 20($sp)	# enteros
 	sw      $s3, 16($sp)	# escalar
 	sw      $s2, 12($sp)	# cadena_resultado
@@ -83,11 +83,11 @@ compara_vector_con_escalar:
         sw      $s0, 4($sp) 	# i
         sw      $ra, 0($sp)
 	
-	move	$s3, $a0
+	move	$s3, $a0      #escalar
 
 	la	$s7, enteros
-	lw	$s1, 0($s7)		# int lon = enteros.tam;
-	lw	$s6, 0($s7)		# BORRAR
+	addi	$s1, $s7,4		# puntero a enteros.datos
+	lw	$s6, 0($s7)		# lon
 	
 	la	$s2, cadena_resultado
 	
@@ -100,34 +100,34 @@ compara_vector_con_escalar:
 	######################
 
 	
-CS_for:	bgt	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
-	addi	$s0, $s0, 1		#++i
-	
-	#int c = compara_enteros(enteros.datos[i], escalar);
-	add	$s1, $s7, 4		#entero + 4
+CS_for:	bge	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	move	$a1, $s3
 	lw	$a0, 0($s1)
-	jal	compara_enteros
+	jal	compara_enteros 	#int c = compara_enteros(enteros.datos[i], escalar);
 	move	$t0, $v0		#int c
 	li	$t1, '='		#char car = '=';
 	
 	bne    	$t0, 1, CS_mn		# if (c == 1) {
 	li	$t1, '>'
-
+        j 	CS_sig
 CS_mn:	bne    	$t0, -1, CS_sig		#if (c == -1) {
 	li	$t1, '<'
 
-
 	#cadena_resultado[i] = car;
-CS_sig:	addi	$s2, $s2, 1
+CS_sig:	
 	sb 	$t1, 0($s2)	
+	addi	$s2, $s2, 1
+	addi	$s0, $s0, 1		#++i
+	
+	add	$s1, $s1, 4		#entero + 4
+
 	j	CS_for 			# }
 
 CS_fin:
 	# en vez de poner addi	$s2, $s2, 1 creo que puedo acceder directamente al siguiente, REVISAR
 	sb	$zero, 1($s2)		#cadena_resultado[lon] = '\0';
 	
-        lw      $a0, 24($sp)
+        lw      $s6, 24($sp)
         lw      $s7, 20($sp)
         lw      $s3, 16($sp)
         lw      $s2, 12($sp)
