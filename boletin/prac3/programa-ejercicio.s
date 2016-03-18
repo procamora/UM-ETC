@@ -86,7 +86,7 @@ compara_vector_con_escalar:
 	move	$s3, $a0      #escalar
 
 	la	$s7, enteros
-	addi	$s1, $s7,4		# puntero a enteros.datos
+	addi	$s1, $s7, 4		# puntero a enteros.datos
 	lw	$s6, 0($s7)		# lon
 	
 	la	$s2, cadena_resultado
