@@ -22,7 +22,7 @@ enteros:
         .space	956	# (255 - 16) elementos de 4 bytes
 cadena_resultado:
 	.space	256
-str000:	.asciiz		"Introduce el nimero de elementos del array: "
+str000:	.asciiz		"Introduce el numero de elementos del array: "
 str001:	.asciiz		"Error: el valor introducido para el numero de elementos no esta soportado."
 str002:	.asciiz		"Introduce el maximo valor absoluto aleatorio: "
 str003:	.asciiz		"Error: el valor introducido para el maximo no esta soportado."
@@ -136,10 +136,63 @@ CS_fin:
         lw      $ra, 0($sp)
 	addi    $sp, $sp, 28
 	jr	$ra
-        
+
+
 inicializa_vector:
-	# TODO
-	break
+	addi    $sp, $sp, -12
+	sw      $s1, 8($sp)
+	sw      $s0, 4($sp)
+ 	sw      $ra, 0($sp)
+
+	la	$a0, str000
+	jal	print_string
+	jal	read_integer
+	move	$s0, $v0		# N
+
+
+	la	$a0, str002
+	jal	print_string
+	jal	read_integer
+	move	$s1, $v0		# R
+	
+	
+IV_1:	bge 	$s0, 1, IV_2
+	la	$a0, str001
+	jal	print_string
+	j	IV_fin
+	
+	# REPASAR SIESTO ESTA BIEN
+IV_2:	li	$t0, 254			#define NUM_DATOS_MAX 255
+	bge	$t0, $s0 ,IV_3
+	la	$a0, str001
+	jal	print_string
+	j	IV_fin
+	
+IV_3:	bge 	$s1, 1, IV_4
+	la	$a0, str003
+	jal	print_string
+	j	IV_fin
+
+IV_4:	li	$t0, 1500
+	bge	$t0, $s1, IV_pro
+	la	$a0, str003
+	jal	print_string
+	j	IV_fin
+	
+IV_pro:	li	$t0, 2
+	mult 	$t0, $s0
+	mflo 	$a0
+	add	$a0, $a0, 1
+	sub	$a0, $a0, $s0
+	jal 	random_int_max
+	move	$a0, $v0
+	jal	print_integer
+	
+IV_fin:	lw      $s1, 8($sp)
+	lw      $s0, 4($sp)
+	lw      $ra, 0($sp)
+	addi    $sp, $sp, 12
+	jr	$ra
 
 	.globl	main
 main:
