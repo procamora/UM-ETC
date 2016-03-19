@@ -93,12 +93,6 @@ compara_vector_con_escalar:
 	
 	li	$s0, 0 			# i=0
 	
-	######################
-	#lw	$s1, 4($s7)
-	#lw	$s1, 8($s7)
-	#j	CS_fin
-	######################
-
 	
 CS_for:	bge	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	move	$a1, $s3
@@ -139,9 +133,10 @@ CS_fin:
 
 
 inicializa_vector:
-	addi    $sp, $sp, -12
-	sw      $s1, 8($sp)
-	sw      $s0, 4($sp)
+	addi    $sp, $sp, -16
+	sw      $s2, 12($sp)	# i
+	sw      $s1, 8($sp)	# R
+	sw      $s0, 4($sp)	# N
  	sw      $ra, 0($sp)
 
 	la	$a0, str000
@@ -180,15 +175,21 @@ IV_4:	li	$t0, 1500
 	j	IV_fin
 	
 IV_pro:	li	$t0, 2
-	mult 	$t0, $s0
+	li	$s2, 0		# int i=0
+IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
+	mult 	$t0, $s1
 	mflo 	$a0
 	add	$a0, $a0, 1
-	sub	$a0, $a0, $s0
+	sub	$a0, $a0, $s1
 	jal 	random_int_max
 	move	$a0, $v0
+	addi	$s2, $s2, 1
 	jal	print_integer
 	
-IV_fin:	lw      $s1, 8($sp)
+	j	IV_for
+	
+IV_fin:	sw      $s2, 12($sp)
+	lw      $s1, 8($sp)
 	lw      $s0, 4($sp)
 	lw      $ra, 0($sp)
 	addi    $sp, $sp, 12
