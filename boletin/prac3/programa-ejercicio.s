@@ -19,23 +19,23 @@ enteros:
 	.word	8
 	.word	2
 	.word	83
-        .space	956	# (255 - 16) elementos de 4 bytes
+	.space	956	# (255 - 16) elementos de 4 bytes
 cadena_resultado:
 	.space	256
-str000:	.asciiz		"Introduce el numero de elementos del array: "
-str001:	.asciiz		"Error: el valor introducido para el numero de elementos no esta soportado."
-str002:	.asciiz		"Introduce el maximo valor absoluto aleatorio: "
-str003:	.asciiz		"Error: el valor introducido para el maximo no esta soportado."
-str004:	.asciiz		"\Practica 3 de ensamblador de ETC\n"
-str005:	.asciiz		"\nActualmente hay "
-str006:	.asciiz		" numeros en el vector: "
-str007:	.asciiz		" "
-str008:	.asciiz		"\n"
-str009:	.asciiz		"\n 1 - Comparar los elementos del vector con un escalar\n 2 - Rellenar el vector con valores aleatorios\n 3 - Salir\n\nElige una opcion: "
-str010:	.asciiz		"Introduce el escalar con el que quieres comparar: "
-str011:	.asciiz		"El resultado de comparar cada elemento con el escalar es: "
-str012:	.asciiz		"Adios!\n"
-str013:	.asciiz		"Opcion incorrecta. Pulse cualquier tecla para seguir.\n"
+str000:	.asciiz	"Introduce el numero de elementos del array: "
+str001:	.asciiz	"Error: el valor introducido para el numero de elementos no esta soportado."
+str002:	.asciiz	"Introduce el maximo valor absoluto aleatorio: "
+str003:	.asciiz	"Error: el valor introducido para el maximo no esta soportado."
+str004:	.asciiz	"\Practica 3 de ensamblador de ETC\n"
+str005:	.asciiz	"\nActualmente hay "
+str006:	.asciiz	" numeros en el vector: "
+str007:	.asciiz	" "
+str008:	.asciiz	"\n"
+str009:	.asciiz	"\n 1 - Comparar los elementos del vector con un escalar\n 2 - Rellenar el vector con valores aleatorios\n 3 - Salir\n\nElige una opcion: "
+str010:	.asciiz	"Introduce el escalar con el que quieres comparar: "
+str011:	.asciiz	"El resultado de comparar cada elemento con el escalar es: "
+str012:	.asciiz	"Adios!\n"
+str013:	.asciiz	"Opcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
 	.text	
 
@@ -74,97 +74,98 @@ CE_ex:	jr	$ra
 # <<cadena_resultado>> debe quedar como una cadena valida de la
 # misma logitud que <<enteros>> (debe acabar con '\0') */
 compara_vector_con_escalar:
-	addi    $sp, $sp, -28
-	sw      $s6, 24($sp)	# escalar
-	sw      $s7, 20($sp)	# enteros
-	sw      $s3, 16($sp)	# escalar
-	sw      $s2, 12($sp)	# cadena_resultado
-        sw      $s1, 8($sp)	# lon
-        sw      $s0, 4($sp) 	# i
-        sw      $ra, 0($sp)
-	
-	move	$s3, $a0      #escalar
+	addi	$sp, $sp, -28
+	sw	$s6, 24($sp)	# escalar
+	sw	$s7, 20($sp)	# enteros
+	sw	$s3, 16($sp)	# escalar
+	sw	$s2, 12($sp)	# cadena_resultado
+	sw	$s1, 8($sp)	# lon
+	sw	$s0, 4($sp) 	# i
+	sw	$ra, 0($sp)
+
+	move	$s3, $a0	#escalar
 
 	la	$s7, enteros
-	addi	$s1, $s7, 4		# puntero a enteros.datos
-	lw	$s6, 0($s7)		# lon
-	
+	lw	$s6, 0($s7)	# lon
+	addi	$s1, $s7, 4	# puntero a enteros.datos
+
 	la	$s2, cadena_resultado
+
+	li	$s0, 0		# i=0
 	
-	li	$s0, 0 			# i=0
-	
-	
+	addi	$s6, $s6, -1
+
+
 CS_for:	bgt	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	move	$a1, $s3
 	lw	$a0, 0($s1)
 	jal	compara_enteros 	#int c = compara_enteros(enteros.datos[i], escalar);
-	move	$t0, $v0		#int c
-	li	$t1, '='		#char car = '=';
-	
-	bne    	$t0, 1, CS_mn		# if (c == 1) {
+	move	$t0, $v0	#int c
+	li	$t1, '='	#char car = '=';
+
+	bne	$t0, 1, CS_mn	# if (c == 1) {
 	li	$t1, '>'
-        j 	CS_sig
-CS_mn:	bne    	$t0, -1, CS_sig		#if (c == -1) {
+	j 	CS_sig
+CS_mn:	bne	$t0, -1, CS_sig	#if (c == -1) {
 	li	$t1, '<'
 
 	#cadena_resultado[i] = car;
 CS_sig:	
 	sb 	$t1, 0($s2)	
 	addi	$s2, $s2, 1
-	addi	$s0, $s0, 1		#++i
-	
-	add	$s1, $s1, 4		#entero + 4
+	addi	$s0, $s0, 1	#++i
+	add	$s1, $s1, 4	#entero + 4
 
-	j	CS_for 			# }
+	j	CS_for		# }
 
 CS_fin:
 	# en vez de poner addi	$s2, $s2, 1 creo que puedo acceder directamente al siguiente, REVISAR
-	sb	$zero, 1($s2)		#cadena_resultado[lon] = '\0';
-	
-        lw      $s6, 24($sp)
-        lw      $s7, 20($sp)
-        lw      $s3, 16($sp)
-        lw      $s2, 12($sp)
-        lw      $s1, 8($sp)
-        lw      $s0, 4($sp)
-        lw      $ra, 0($sp)
-	addi    $sp, $sp, 28
+	sb	$zero, 1($s2)	#cadena_resultado[lon] = '\0';
+
+	lw	$s6, 24($sp)
+	lw	$s7, 20($sp)
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 28
 	jr	$ra
 
 
 inicializa_vector:
-	addi    $sp, $sp, -24
-	sw      $s7, 20($sp)	# 
-	sw      $s3, 16($sp)	# 
-	sw      $s2, 12($sp)	# i
-	sw      $s1, 8($sp)	# R
-	sw      $s0, 4($sp)	# N
- 	sw      $ra, 0($sp)
+	addi	$sp, $sp, -24
+	sw	$s7, 20($sp)	# 
+	sw	$s3, 16($sp)	# 
+	sw	$s2, 12($sp)	# i
+	sw	$s1, 8($sp)	# R
+	sw	$s0, 4($sp)	# N
+	sw	$ra, 0($sp)
 
 	la	$a0, str000
 	jal	print_string
 	jal	read_integer
-	move	$s0, $v0		# N
+	move	$s0, $v0	# N
 
 
 	la	$a0, str002
 	jal	print_string
 	jal	read_integer
-	move	$s1, $v0		# R
-	
-	
-IV_1:	bge 	$s0, 1, IV_2
+	move	$s1, $v0	# R
+
+
+IV_1:	bge	$s0, 1, IV_2
 	la	$a0, str001
 	jal	print_string
 	j	IV_fin
 	
 	# REPASAR SIESTO ESTA BIEN
-IV_2:	li	$t0, 254			#define NUM_DATOS_MAX 255
+IV_2:	li	$t0, 255		#define NUM_DATOS_MAX 255
 	bge	$t0, $s0 ,IV_3
 	la	$a0, str001
 	jal	print_string
 	j	IV_fin
-	
+
 IV_3:	bge 	$s1, 1, IV_4
 	la	$a0, str003
 	jal	print_string
@@ -175,36 +176,36 @@ IV_4:	li	$t0, 1500
 	la	$a0, str003
 	jal	print_string
 	j	IV_fin
-	
-	
+
+
 IV_pro:	li	$t0, 2
-	li	$s2, 0		# int i=0
+	li	$s2, 0	# int i=0
 	
 	la	$s7, enteros
-	addi	$s3, $s7, 4		# puntero a enteros.datos
-	sw 	$s0, 0($s7)		# lon
-	
-	
+	addi	$s3, $s7, 4	# puntero a enteros.datos
+	sw 	$s0, 0($s7)	# lon
+
+
 IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
-	mult 	$t0, $s1
-	mflo 	$a0
+	mult	$t0, $s1
+	mflo	$a0
 	add	$a0, $a0, 1
-	jal 	random_int_max
+	jal	random_int_max
 	sub	$t3, $v0, $s1
 	sw	$t3, 0($s3)
 	addi	$s2, $s2, 1
 	addi	$s3, $s3, 4
 
-	
+
 	j	IV_for
-	
-IV_fin:	lw      $s7, 20($sp)
-	lw      $s3, 16($sp)
-	lw      $s2, 12($sp)
-	lw      $s1, 8($sp)
-	lw      $s0, 4($sp)
-	lw      $ra, 0($sp)
-	addi    $sp, $sp, 24
+
+IV_fin:	lw	$s7, 20($sp)
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 24
 	jr	$ra
 
 	.globl	main
@@ -257,18 +258,18 @@ B4_7:	la	$a0, str012
 	jal	mips_exit
 	j	B4_2
 B4_8:	bne	$s1, '1', B4_10
-	la	$a0, str010		# Introduce el escalar con el que quieres comparar: 
+	la	$a0, str010	# Introduce el escalar con el que quieres comparar: 
 	jal	print_string
 	jal	read_integer
 	move	$a0, $v0
 	jal	compara_vector_con_escalar
-	la	$a0, str011		# El resultado de comparar cada elemento con el escalar es: 
+	la	$a0, str011	# El resultado de comparar cada elemento con el escalar es: 
 	jal	print_string
 	la	$a0, cadena_resultado
 	jal	print_string
-        la      $a0, str008
-        jal	print_string
-        j       B4_2
+	la	$a0, str008
+	jal	print_string
+	j	 B4_2
 B4_10:	la	$a0, str013
 	jal	print_string
 	jal	read_character	# 121     read_character(); 
@@ -277,7 +278,7 @@ B4_10:	la	$a0, str013
 	lw	$s1, 4($sp)
 	lw	$ra, 8($sp)
 	addiu	$sp, $sp, 12
-	jr      $ra
+	jr	$ra
 
 print_integer:
 	li	$v0, 1
