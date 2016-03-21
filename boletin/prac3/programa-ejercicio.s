@@ -94,7 +94,7 @@ compara_vector_con_escalar:
 	li	$s0, 0 			# i=0
 	
 	
-CS_for:	bge	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
+CS_for:	bgt	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	move	$a1, $s3
 	lw	$a0, 0($s1)
 	jal	compara_enteros 	#int c = compara_enteros(enteros.datos[i], escalar);
@@ -133,9 +133,8 @@ CS_fin:
 
 
 inicializa_vector:
-	addi    $sp, $sp, -28
-	sw      $s7, 24($sp)	# 
-	sw      $s4, 20($sp)	# no la uso, borrar
+	addi    $sp, $sp, -24
+	sw      $s7, 20($sp)	# 
 	sw      $s3, 16($sp)	# 
 	sw      $s2, 12($sp)	# i
 	sw      $s1, 8($sp)	# R
@@ -199,14 +198,13 @@ IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
 	
 	j	IV_for
 	
-IV_fin:	lw      $s7, 24($sp)
-	lw      $s4, 20($sp)
+IV_fin:	lw      $s7, 20($sp)
 	lw      $s3, 16($sp)
 	lw      $s2, 12($sp)
 	lw      $s1, 8($sp)
 	lw      $s0, 4($sp)
 	lw      $ra, 0($sp)
-	addi    $sp, $sp, 28
+	addi    $sp, $sp, 24
 	jr	$ra
 
 	.globl	main
