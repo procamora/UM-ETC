@@ -92,11 +92,9 @@ compara_vector_con_escalar:
 	la	$s2, cadena_resultado
 
 	li	$s0, 0		# i=0
-	
-	addi	$s6, $s6, -1
 
 
-CS_for:	bgt	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
+CS_for:	bge	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	move	$a1, $s3
 	lw	$a0, 0($s1)
 	jal	compara_enteros 	#int c = compara_enteros(enteros.datos[i], escalar);
@@ -159,7 +157,7 @@ IV_1:	bge	$s0, 1, IV_2
 	jal	print_string
 	j	IV_fin
 	
-	# REPASAR SIESTO ESTA BIEN
+	# REPASAR SI ESTO ESTA BIEN
 IV_2:	li	$t0, 255		#define NUM_DATOS_MAX 255
 	bge	$t0, $s0 ,IV_3
 	la	$a0, str001
@@ -178,15 +176,15 @@ IV_4:	li	$t0, 1500
 	j	IV_fin
 
 
-IV_pro:	li	$t0, 2
-	li	$s2, 0	# int i=0
+IV_pro:	li	$s2, 0	# int i=0
 	
 	la	$s7, enteros
 	addi	$s3, $s7, 4	# puntero a enteros.datos
-	sw 	$s0, 0($s7)	# lon
+	sw	$s0, 0($s7)	# lon
 
 
-IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
+IV_for:	bge	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
+	li	$t0, 2
 	mult	$t0, $s1
 	mflo	$a0
 	add	$a0, $a0, 1
@@ -195,8 +193,6 @@ IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
 	sw	$t3, 0($s3)
 	addi	$s2, $s2, 1
 	addi	$s3, $s3, 4
-
-
 	j	IV_for
 
 IV_fin:	lw	$s7, 20($sp)
