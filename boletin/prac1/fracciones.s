@@ -15,22 +15,22 @@ main:
         la      $a0, msg_a        # Pone en $a0 la direccion de la cadena
         jal	print        
         jal	read
-        move	$t0 $a0
+        move	$t0 $v0
         
         la      $a0, msg_b
         jal	print
         jal	read
-        move	$t1 $a0
+        move	$t1 $v0
 
         la      $a0, msg_c
         jal	print
         jal	read
-        move	$t2 $a0
+        move	$t2 $v0
 
         la      $a0, msg_d
         jal	print
         jal	read
-        move	$t3 $a0
+        move	$t3 $v0
 
         mult	$t0, $t3	# a*d
         mflo	$t4
@@ -58,7 +58,6 @@ print:
 read:
 	li	$v0, 5
 	syscall
-	move	$a0 $v0 
 	jr	$ra
 
 # Procedimiento para imprimir un mensaje con el resultado. Imprime la
