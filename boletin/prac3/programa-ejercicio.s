@@ -134,9 +134,9 @@ CS_fin:
 
 inicializa_vector:
 	addi    $sp, $sp, -28
-	sw      $s7, 24($sp)	# i
-	sw      $s4, 20($sp)	# i
-	sw      $s3, 16($sp)	# i
+	sw      $s7, 24($sp)	# 
+	sw      $s4, 20($sp)	# no la uso, borrar
+	sw      $s3, 16($sp)	# 
 	sw      $s2, 12($sp)	# i
 	sw      $s1, 8($sp)	# R
 	sw      $s0, 4($sp)	# N
@@ -190,9 +190,9 @@ IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
 	mult 	$t0, $s1
 	mflo 	$a0
 	add	$a0, $a0, 1
-	sub	$a0, $a0, $s1
 	jal 	random_int_max
-	sw	$v0, 0($s3)
+	sub	$t3, $v0, $s1
+	sw	$t3, 0($s3)
 	addi	$s2, $s2, 1
 	addi	$s3, $s3, 4
 
