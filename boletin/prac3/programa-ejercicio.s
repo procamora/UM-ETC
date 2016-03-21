@@ -192,8 +192,9 @@ IV_for:	bgt	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
 	add	$a0, $a0, 1
 	sub	$a0, $a0, $s1
 	jal 	random_int_max
-
+	sw	$v0, 0($s3)
 	addi	$s2, $s2, 1
+	addi	$s3, $s3, 4
 
 	
 	j	IV_for
