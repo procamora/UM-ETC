@@ -164,7 +164,7 @@ IV_2:	li	$t0, 255		#define NUM_DATOS_MAX 255
 	jal	print_string
 	j	IV_fin
 
-IV_3:	bge 	$s1, 1, IV_4
+IV_3:	bge	$s1, 1, IV_4
 	la	$a0, str003
 	jal	print_string
 	j	IV_fin

@@ -1,0 +1,37 @@
+<NotepadPlus>
+    <UserLang name="MIPS" ext="mips cpsp psp">
+        <!-- Linblow :) -->
+        <Settings>
+            <Global caseIgnored="yes" />
+            <TreatAsSymbol comment="yes" commentLine="yes" />
+            <Prefix words1="no" words2="no" words3="no" words4="yes" />
+        </Settings>
+        <KeywordLists>
+            <Keywords name="Delimiters">000000</Keywords>
+            <Keywords name="Folder+"></Keywords>
+            <Keywords name="Folder-"></Keywords>
+            <Keywords name="Operators"></Keywords>
+            <Keywords name="Comment">1/* 2*/ 0# 0--</Keywords>
+            <Keywords name="Words1"> mfhi mflo beqz bnez blt move mul ove li la nop abs.s add add.s addi addiu addu and andi bc0f bc0fl bc0t bc0tl bc1f bc1fl bc1t bc1tl beq beql bgez bgezal bgezall bgezl bgtz bgtzl blez blezl bltz bltzal bltzall bltzl blt ble bgt bge bne bnel break c.eq.s c.f.s c.le.s c.lt.s cfc1 ctc1 cvt.s.w cvt.w.s dadd daddi daddiu daddu di div div1 div.s divu divu1 dsll dsll32 dsllv dsra dsra32 dsrav dsrl dsrl32 dsrlv dsub dsubu ei eret j jal jalr jr lb lbu ld ldl ldr lh lhu lui lw lwl lwr lwu lwc1 lq madd madd1 madd.s madda.s maddu max.s maddu1 mfbpc mfc0 mfdab mfdabm mfdvb mfdvbm mfiab mfiabm mfc1 mfpc mfps min.s mtbpc mtc0 mtdab mtdabm mtdvb mtdvbm mtiab mtpc mtps mfhi mfhi1 mflo mflo1 mfsa mov.s movn movz msub.s msuba.s mtc1 mthi mthi1 mtlo mtlo1 mtsa mtsab mtsah mul.s mula.s mult mult1 multu multu1 neg.s nor or ori pref pabsh pabsw paddb paddh paddsb paddsh paddsw paddub padduh padduw paddw padsbh pand pceqb pceqh pceqw pcgtb pcgth pcgtw pcpyh pcpyld pcpyud pdvibw pdivuw pdivw pexch pexcw pexeh pexew pext5 pextlb pextlh pextlw pextub pextuh pextuw phmadh phmsbh pinteh pinth plzcw pmaddh pmadduw pmaddw pmaxh pmaxw pmfhi pmfhl.lh pmfhl.lw pmfhl.sh pmfhl.slw pmfhl.uw pmflo pminh pminw pmsubh pmsubw pmthi pmth.lw pmtlo pmulth pmultuw pmultw pnor ppac5 ppacb ppach ppacw prevh prot3w psllh psllvw psllw psrah psravw psraw psrlh psrlvw psrlw psubb psubh psubsb psubsh psubsw psubub psubuh psubuw psubw pxor qfsrv rsqrt.s sb sd sdl sdr sh sll sllv slt slti sltiu sltu sq sqrt.s sra srav srl srlv sub sub.s suba.s subu sw swc1 swl swr sync syscall teq teqi tge tgei tgeiu tgeu tlt tlti tltiu tltu tne tnei xor xori , =</Keywords>
+            <Keywords name="Words2"> .byte .data .word .space .asciiz .text .globl main: t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 k0 k1 v0 v1 ra at sp gp fp s0 s1 s2 s3 s4 s5 s6 s7 a0 a1 a2 a3 zero</Keywords>
+            <Keywords name="Words3">{ } main void void* int int* unsigned char char* u8 u8* u16 u16* u32 u32* long long* double double* float float*</Keywords>
+            <Keywords name="Words4">x $ ( ) struct</Keywords>
+        </KeywordLists>
+        <Styles>
+            <WordsStyle name="DEFAULT" styleID="11" fgColor="808080" bgColor="FFFFFF" fontName="Courier New" fontStyle="0" />
+            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="KEYWORD1" styleID="5" fgColor="0080FF" bgColor="FFFFFF" fontName="Courier New" fontStyle="1" />
+            <WordsStyle name="KEYWORD2" styleID="6" fgColor="FF0000" bgColor="FFFFFF" fontName="Courier New" fontStyle="1" />
+            <WordsStyle name="KEYWORD3" styleID="7" fgColor="8000FF" bgColor="FFFFFF" fontName="Courier New" fontStyle="1" />
+            <WordsStyle name="KEYWORD4" styleID="8" fgColor="004080" bgColor="FFFFFF" fontName="Courier New" fontStyle="1" />
+            <WordsStyle name="COMMENT" styleID="1" fgColor="008000" bgColor="FFFFFF" fontName="Courier New" fontStyle="3" />
+            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="008000" bgColor="FFFFFF" fontName="Courier New" fontStyle="1" />
+            <WordsStyle name="NUMBER" styleID="4" fgColor="004080" bgColor="FFFFFF" fontName="Courier New" fontStyle="1" />
+            <WordsStyle name="OPERATOR" styleID="10" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="DELIMINER1" styleID="14" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+        </Styles>
+    </UserLang>
+</NotepadPlus>
