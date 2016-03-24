@@ -75,8 +75,8 @@ CE_ex:	jr	$ra
 # misma logitud que <<enteros>> (debe acabar con '\0') */
 compara_vector_con_escalar:
 	addi	$sp, $sp, -28
-	sw	$s6, 24($sp)	# escalar
-	sw	$s7, 20($sp)	# enteros
+	sw	$s7, 24($sp)	# escalar
+	sw	$s6, 20($sp)	# enteros
 	sw	$s3, 16($sp)	# escalar
 	sw	$s2, 12($sp)	# cadena_resultado
 	sw	$s1, 8($sp)	# lon
@@ -88,16 +88,15 @@ compara_vector_con_escalar:
 	la	$s7, enteros
 	lw	$s6, 0($s7)	# lon
 	addi	$s1, $s7, 4	# puntero a enteros.datos
-
-	la	$s2, cadena_resultado
-
+	
 	li	$s0, 0		# i=0
+	la	$s2, cadena_resultado
 
 
 CS_for:	bge	$s0, $s6, CS_fin	#for (int i = 0; i < lon; ++i) {
 	move	$a1, $s3
 	lw	$a0, 0($s1)
-	jal	compara_enteros 	#int c = compara_enteros(enteros.datos[i], escalar);
+	jal	compara_enteros	#int c = compara_enteros(enteros.datos[i], escalar);
 	move	$t0, $v0	#int c
 	li	$t1, '='	#char car = '=';
 
@@ -112,7 +111,7 @@ CS_sig:
 	sb 	$t1, 0($s2)	
 	addi	$s2, $s2, 1
 	addi	$s0, $s0, 1	#++i
-	add	$s1, $s1, 4	#entero + 4
+	addi	$s1, $s1, 4	#entero + 4
 
 	j	CS_for		# }
 
@@ -120,8 +119,8 @@ CS_fin:
 	# en vez de poner addi	$s2, $s2, 1 creo que puedo acceder directamente al siguiente, REVISAR
 	sb	$zero, 1($s2)	#cadena_resultado[lon] = '\0';
 
-	lw	$s6, 24($sp)
-	lw	$s7, 20($sp)
+	lw	$s7, 24($sp)
+	lw	$s6, 20($sp)
 	lw	$s3, 16($sp)
 	lw	$s2, 12($sp)
 	lw	$s1, 8($sp)
@@ -180,7 +179,21 @@ IV_pro:	li	$s2, 0	# int i=0
 	
 	la	$s7, enteros
 	addi	$s3, $s7, 4	# puntero a enteros.datos
-	sw	$s0, 0($s7)	# lon
+	
+	lw	$t0, 0($s7)
+	la	$t1, cadena_resultado
+	li	$t2, 4
+	div	$t0, $t2
+	mflo	$t3
+	mfhi	$t4
+	add	$t0, $t3, $t4
+	li	$t2, 0
+IV_cle:	bge	$t2, $t0, IV_fisi	# blucle para vaciar cadena_resultado
+	sw	$zero, 0($t1)
+	addi	$t1, $t1, 4
+	addi	$t2, $t2, 1
+	j	IV_cle
+IV_fisi:sw	$s0, 0($s7)	# lon
 
 
 IV_for:	bge	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
@@ -191,7 +204,7 @@ IV_for:	bge	$s2, $s0 IV_fin	# for(i=0;i<=N;i++)
 	jal	random_int_max
 	sub	$t3, $v0, $s1
 	sw	$t3, 0($s3)
-	addi	$s2, $s2, 1
+	addi	$s2, $s2, 1	#i++
 	addi	$s3, $s3, 4
 	j	IV_for
 
