@@ -23,6 +23,6 @@ addi	$s1, $s1, 4	#entero + 4
 
 ###inicializa_vector:
 
-
+El principal problema que he tenido era que cuando inicializaba el vector con un tamaño inferior al anterior al hacer las comparaciones me cogia 1 numero de mas del otro vector, por lo que al hacer la comparación estaba con un operador de mas, estuve repasando todos los comparadores para ver si encontraba algun error pero no lo encontre, asi que lo que hice fue en la funcion, antes de llenarla con los nuevos numeros poner todo el vector anterior con `\0`
 
 
