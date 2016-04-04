@@ -648,8 +648,42 @@ B14_1:	lw	$ra, 0($sp)
 	jr	$ra
 
 	
-intentar_rotar_pieza_actual:
-	break
+intentar_rotar_pieza_actual:		#(void)
+	addiu	$sp, $sp, -12
+	sw	$s1, 8($sp)
+	sw	$s0, 4($sp)
+	sw	$ra, 0($sp)
+	
+	la	$s0, imagen_auxiliar	# Imagen *pieza_rotada = imagen_auxiliar;
+	la	$s1, pieza_actual	#  
+	
+	move	$a0, $s0		# pieza_rotada
+	move	$a1, 4($s1)		# pieza_actual->alto
+	move	$a2, 0($s1)		# pieza_actual->ancho
+	move	$a3, $zero		# PIXEL_VACIO
+	jal	imagen_init		#imagen_init(pieza_rotada, pieza_actual->alto, pieza_actual->ancho, PIXEL_VACIO);
+
+	move	$a0, $s0
+	move	$a1, $s1
+	move	$a2, $zero
+	move	$a3, $zero
+	jal	imagen_dibuja_imagen_rotada	# magen_dibuja_imagen_rotada(pieza_rotada, pieza_actual, 0, 0)
+	
+	move	$a0, $s0
+	lw	$a1, pieza_actual_x
+	lw	$a2, pieza_actual_y
+	jal	probar_pieza
+	
+	move	$a0, $s1
+	move	$a1, $s0
+	beqz	$v0, B15_1
+	jal	imagen_copy
+	
+B15_1:	lw	$ra, 0($sp)
+	lw	$s0, 4($sp)
+	lw	$s1, 8($sp)
+	addiu	$sp, $sp, 12
+	jr	$ra
 
 	
 tecla_salir:
