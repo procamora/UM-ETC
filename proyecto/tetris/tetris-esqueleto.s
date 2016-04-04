@@ -1,4 +1,4 @@
-# Versión incompleta del tetris 
+# Version incompleta del tetris 
 # Sincronizada con tetris.s:r2563
         
 	.data	
@@ -108,11 +108,11 @@ procesar_entrada.opciones:
 	.word	tecla_rotar
 
 str000:
-	.asciiz		"Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n"
+	.asciiz		"Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opcion:\n"
 str001:
-	.asciiz		"\n¡Adiós!\n"
+	.asciiz		"\n¡Adios!\n"
 str002:
-	.asciiz		"\nOpción incorrecta. Pulse cualquier tecla para seguir.\n"
+	.asciiz		"\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
 
 	.text	
@@ -214,7 +214,47 @@ imagen_init:
 	jr	$ra
 
 imagen_copy:
-	break
+	addi	$sp, $sp, -20
+	sw	$s3, 16($sp)		# int y = 0
+	sw	$s2, 12($sp)		# int x = 0
+	sw	$s1, 8($sp)		# Imagen *src
+	sw	$s0, 4($sp)		# Imagen *dst
+	sw	$ra, 0($sp)
+
+	move	$s0, $a0		# Imagen *dst
+	move	$s1, $a1		# Imagen *src
+	
+	lw	$t0, 0($s1)		# src->ancho;
+	sw	$t0, 0($s1)		# dst->ancho = src->ancho;
+	lw	$t0, 4($s1)		# src->alto;
+	sw	$t0, 4($s1)		# dst->alto = src->alto;
+	
+	li	$s3, 0
+	
+	# for (int y = 0; y < src->alto; ++y) {
+	li	$s2, 0
+	#for (int x = 0; x < src->ancho; ++x) {
+	move	$a0, $s1		#Imagen *img
+	move	$a1, 			#int x
+	move	$a2, 			#int y
+	jal	imagen_get_pixel
+	
+	
+	move	$a0, $s0
+	move	$a1, $
+	move	$a2, $
+	move	$a3, $v0	#PRECAUCION, REVISAR SI GUARDAR EN S
+	jal	imagen_set_pixel
+	
+	
+	
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 20
+	jr	$ra
 
 imagen_print:				# $a0 = img
 	addiu	$sp, $sp, -24
