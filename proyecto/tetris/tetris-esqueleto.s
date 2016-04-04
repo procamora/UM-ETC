@@ -110,7 +110,7 @@ procesar_entrada.opciones:
 str000:
 	.asciiz		"Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opcion:\n"
 str001:
-	.asciiz		"\n¡Adios!\n"
+	.asciiz		"\nAdios!\n"
 str002:
 	.asciiz		"\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
@@ -121,10 +121,10 @@ str002:
 imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 					# pixel_addr = &data + y*ancho + x
 	lw	$t1, 0($a0)		# $a0 = dirección de la imagen 
-					# $t1 ← ancho
+					# $t1 �? ancho
 	mul	$t1, $t1, $a2		# $a2 * ancho
 	addu	$t1, $t1, $a1		# $a2 * ancho + $a1
-	addiu	$a0, $a0, 8		# $a0 ← dirección del array data
+	addiu	$a0, $a0, 8		# $a0 �? dirección del array data
 	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
 	jr	$ra
 
@@ -197,7 +197,7 @@ B3_5:	lw	$s5, 24($sp)
 	jr	$ra
 
         
-imagen_init:
+imagen_init:				# ($a0, $a1, $a2, $a3) = (img, ancho, alto, fondo)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 	
@@ -213,7 +213,7 @@ imagen_init:
 	jr	$ra
 
 	
-imagen_copy:
+imagen_copy:				# ($a0, $a1) = (dst, src)
 	addi	$sp, $sp, -28
 	sw	$s5, 24($sp)
 	sw	$s4, 20($sp)
@@ -243,17 +243,12 @@ B5_1:	bge	$s2, $s4, B5_2
 	move	$a2, $s3			#int y
 	jal	imagen_get_pixel
 	
-	move	$a0, $s1
+	move	$a0, $s0
 	move	$a1, $s2
 	move	$a2, $s3
 	move	$a3, $v0	#PRECAUCION, REVISAR SI GUARDAR EN S
 	jal	imagen_set_pixel
-	
-	move	$a0, $s0
-	move	$a1, $s2
-	move	$a2, $s3
-	move	$a3, $v0
-	jal	imagen_set_pixel
+
 	addi	$s2, $s2, 1
 	j	B5_1
 
@@ -431,11 +426,11 @@ pieza_aleatoria:
 	sw	$ra, 0($sp)
 	li	$a0, 0
 	li	$a1, 7
-	jal	random_int_range	# $v0 ← random_int_range(0, 7)
+	jal	random_int_range	# $v0 �? random_int_range(0, 7)
 	sll	$t1, $v0, 2
 	la	$v0, piezas
 	addu	$t1, $v0, $t1		# $t1 = piezas + $v0*4
-	lw	$v0, 0($t1)		# $v0 ← piezas[$v0]
+	lw	$v0, 0($t1)		# $v0 �? piezas[$v0]
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
@@ -512,7 +507,7 @@ nueva_pieza_actual:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 	
-	jal	pieza_aleatoria
+	jal	pieza_aleatoria		# Imagen *elegida = pieza_aleatoria();
 	la	$a0, pieza_actual
 	move	$a1, $v0
 	jal	imagen_copy
@@ -658,8 +653,8 @@ intentar_rotar_pieza_actual:		#(void)
 	la	$s1, pieza_actual	#  
 	
 	move	$a0, $s0		# pieza_rotada
-	move	$a1, 4($s1)		# pieza_actual->alto
-	move	$a2, 0($s1)		# pieza_actual->ancho
+	lw	$a1, 4($s1)		# pieza_actual->alto
+	lw	$a2, 0($s1)		# pieza_actual->ancho
 	move	$a3, $zero		# PIXEL_VACIO
 	jal	imagen_init		#imagen_init(pieza_rotada, pieza_actual->alto, pieza_actual->ancho, PIXEL_VACIO);
 
@@ -811,26 +806,6 @@ main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
-
-######################################
-la $a1, pieza_actual
-li $t0, 10
-sw $t0, 0($a1)
-sw $t0, 4($a1)
-
-la $a0, pieza_jota
-
-jal imagen_copy
-
-la $a0, pieza_actual
-jal imagen_print
-
-
-
-li $v0, 10
-syscall
-############################################
-
 	la	$a0, str000
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n")
 	jal	read_character		# char opc = read_character()
