@@ -594,8 +594,31 @@ B12_13:	lw	$s0, 0($sp)
 	jr	$ra
 
 	
-intentar_movimiento:
-	break
+intentar_movimiento:			# ($a0, $a1) = (x, y)
+	addiu	$sp, $sp, -12
+	sw	$s1, 8($sp)
+	sw	$s0, 4($sp)
+	sw	$ra, 0($sp)
+	
+	move	$s0, $a0		# int x
+	move	$s1, $a1		# int y
+	la	$a0, pieza_actual
+	jal	probar_pieza
+	beqz	$v0, B13_0		# if (probar_pieza(pieza_actual, x, y)) { == if(1/True)..
+	lw	$t0, pieza_actual_x	# pieza_actual_x = x;
+	sw	$s0, 0($t0)
+	lw	$t0, pieza_actual_y	# pieza_actual_y = y;
+	sw	$s1, 0($t0)
+	li	$v0, 1
+	j	B13_1
+
+B13_0:	li	$v0, 0
+	
+B13_1:	lw	$ra, 0($sp)
+	lw	$s0, 4($sp)
+	lw	$s1, 8($sp)
+	addiu	$sp, $sp, 12
+	jr	$ra
 
 	
 bajar_pieza_actual:
