@@ -214,7 +214,9 @@ imagen_init:
 	jr	$ra
 
 imagen_copy:
-	addi	$sp, $sp, -20
+	addi	$sp, $sp, -28
+	sw	$s5, 24($sp)
+	sw	$s4, 20($sp)
 	sw	$s3, 16($sp)		# int y = 0
 	sw	$s2, 12($sp)		# int x = 0
 	sw	$s1, 8($sp)		# Imagen *src
@@ -224,36 +226,48 @@ imagen_copy:
 	move	$s0, $a0		# Imagen *dst
 	move	$s1, $a1		# Imagen *src
 	
-	lw	$t0, 0($s1)		# src->ancho;
-	sw	$t0, 0($s1)		# dst->ancho = src->ancho;
-	lw	$t0, 4($s1)		# src->alto;
-	sw	$t0, 4($s1)		# dst->alto = src->alto;
+	lw	$s4, 0($s1)		# src->ancho;
+	sw	$s4, 0($s1)		# dst->ancho = src->ancho;
+	lw	$s5, 4($s1)		# src->alto;
+	sw	$s5, 4($s1)		# dst->alto = src->alto;
 	
-	li	$s3, 0
+	li	$s3, 0			# int y = 0
 	
 	# for (int y = 0; y < src->alto; ++y) {
-	li	$s2, 0
+B5_0:	bge	$s3, $s5, B5_3
+	li	$s2, 0			# int x = 0
 	#for (int x = 0; x < src->ancho; ++x) {
+B5_1:	bge	$s2, $s4, B5_2
 	move	$a0, $s1		#Imagen *img
 	move	$a1, 			#int x
 	move	$a2, 			#int y
 	jal	imagen_get_pixel
 	
-	
-	move	$a0, $s0
-	move	$a1, $
-	move	$a2, $
+	move	$a0, $s1
+	move	$a1, $s2
+	move	$a2, $s3
 	move	$a3, $v0	#PRECAUCION, REVISAR SI GUARDAR EN S
 	jal	imagen_set_pixel
 	
+	move	$a0, $s0
+	move	$a1, $s2
+	move	$a2, $s3
+	move	$a3, $v0
+	jal	imagen_set_pixel
+	addi	$s2, $s2, 1
+	j	B5_1
+
+B5_2:	addi	$s3, $s3, 1
+	j	B5_0
 	
-	
+B5_3:	lw	$s3, 24($sp)
+	lw	$s3, 20($sp)
 	lw	$s3, 16($sp)
 	lw	$s2, 12($sp)
 	lw	$s1, 8($sp)
 	lw	$s0, 4($sp)
 	lw	$ra, 0($sp)
-	addiu	$sp, $sp, 20
+	addiu	$sp, $sp, 28
 	jr	$ra
 
 imagen_print:				# $a0 = img
