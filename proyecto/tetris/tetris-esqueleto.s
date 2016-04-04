@@ -621,8 +621,31 @@ B13_1:	lw	$ra, 0($sp)
 	jr	$ra
 
 	
-bajar_pieza_actual:
-	break
+bajar_pieza_actual:			# (void)
+	addiu	$sp, $sp, -12
+	sw	$s1, 8($sp)
+	sw	$s0, 4($sp)
+	sw	$ra, 0($sp)
+	
+	lw	$s0, pieza_actual_x
+	lw	$s1, pieza_actual_y
+	move	$a0, $s0
+	addi	$a1, $s1, 1
+	jal	intentar_movimiento
+	
+	bnez	$v0, B14_1
+	la	$a0, campo
+	la	$a1, pieza_actual
+	move	$a2, $s0
+	move	$a3, $s1
+	jal	imagen_dibuja_imagen
+	jal	nueva_pieza_actual
+	
+B14_1:	lw	$ra, 0($sp)
+	lw	$s0, 4($sp)
+	lw	$s1, 8($sp)
+	addiu	$sp, $sp, 12
+	jr	$ra
 
 	
 intentar_rotar_pieza_actual:
