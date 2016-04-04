@@ -119,13 +119,13 @@ str002:
 
 imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 					# pixel_addr = &data + y*ancho + x
-    	lw	$t1, 0($a0)		# $a0 = dirección de la imagen 
+	lw	$t1, 0($a0)		# $a0 = dirección de la imagen 
 					# $t1 ← ancho
-    	mul	$t1, $t1, $a2		# $a2 * ancho
-    	addu	$t1, $t1, $a1		# $a2 * ancho + $a1
-    	addiu	$a0, $a0, 8		# $a0 ← dirección del array data
-    	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
-    	jr	$ra
+	mul	$t1, $t1, $a2		# $a2 * ancho
+	addu	$t1, $t1, $a1		# $a2 * ancho + $a1
+	addiu	$a0, $a0, 8		# $a0 ← dirección del array data
+	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
+	jr	$ra
 
 imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	addiu	$sp, $sp, -4
@@ -153,10 +153,10 @@ imagen_set_pixel:
 
 imagen_clean:
 	addi	$sp, $sp, -28
-	sw	$s5, 24($sp)		# Pixel fondo
-	sw	$s4, 20($sp)		# Pixel fondo
-	sw	$s3, 16($sp)		# Pixel fondo
-	sw	$s2, 12($sp)		# Pixel fondo
+	sw	$s5, 24($sp)		# 
+	sw	$s4, 20($sp)		# 
+	sw	$s3, 16($sp)		# 
+	sw	$s2, 12($sp)		# 
 	sw	$s1, 8($sp)		# Pixel fondo
 	sw	$s0, 4($sp)		# Imagen *img
 	sw	$ra, 0($sp)
@@ -167,25 +167,28 @@ imagen_clean:
 	addi	$s0, $t0, 8		# img->data[IMAGEN_MAX_SIZE]
 	move	$s1, $a1		# Pixel fondo
 	li	$s2, 0			# int y = 0
-	li	$s3, 0			# int x = 0
 	
 		
 	
-B3_0:	bgt	$s2, $s4, B3_1		# for (int y = 0; y < img->alto; ++y) {
+B3_0:	bgt	$s2, $s4, B3_5		# for (int y = 0; y < img->alto; ++y) {
 
 
-B3_1:	bgt	$s3, $s5, B3_2		# for (int x = 0; x < img->ancho; ++x) {
+	li	$s3, 0			# int x = 0
+B3_1:	bge	$s3, $s5, B3_2		# for (int x = 0; x < img->ancho; ++x) {
 
 	move	$a0, $s0
 	move	$a1, $s3
 	move	$a2, $s2
 	move	$a3, $s1
 	jal	imagen_set_pixel
+	addi	$s3, $s3, 1
 	
-	j	B3_0
 	j	B3_1
 	
-B3_2:	lw	$s5, 24($sp)
+B3_2:	addi	$s2, $s2, 1
+	j	B3_0
+	
+B3_5:	lw	$s5, 24($sp)
 	lw	$s4, 20($sp)
 	lw	$s3, 16($sp)
 	lw	$s2, 12($sp)
@@ -196,7 +199,19 @@ B3_2:	lw	$s5, 24($sp)
 	jr	$ra
         
 imagen_init:
-	break
+	addi	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	lw	$a1, 0($a0)		# img->ancho = ancho;
+	lw	$a2, 4($a0)		# img->alto = alto;
+	
+	# $a0 -> Imagen *img
+	move	$a1, $a3
+	jal	imagen_clean
+	
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
+	jr	$ra
 
 imagen_copy:
 	break
