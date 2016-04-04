@@ -365,7 +365,62 @@ B7_5:
 	
 
 imagen_dibuja_imagen_rotada:
-	break
+	addi	$sp, $sp, -36
+	sw	$s7, 32($sp)		# src->alto;
+	sw	$s6, 28($sp)		# src->ancho;
+	sw	$s5, 24($sp)		# int y
+	sw	$s4, 20($sp)		# int x
+	sw	$s3, 16($sp)		# int dst_y
+	sw	$s2, 12($sp)		# int dst_x
+	sw	$s1, 8($sp)		# Imagen *src
+	sw	$s0, 4($sp)		# Imagen *dst
+	sw	$ra, 0($sp)
+
+	move	$s0, $a0		# Imagen *dst
+	move	$s1, $a1		# Imagen *src
+	move	$s2, $a2		# int dst_x
+	move	$s3, $a3		# int dst_y
+	li	$s5, 0			# int y
+	lw	$s6, 0($s1)		# src->ancho;
+	lw	$s7, 4($s1)		# src->alto;
+
+B8_0:	bge	$s5, $s7, B8_5
+	li	$s4, 0			# int x
+B8_1:	bge	$s4, $s4, B8_2
+	
+	move	$a0, $s1
+	move	$a1, $s4
+	move	$a2, $s5
+	jal	imagen_get_pixel
+	beqz	$v0, B8_3
+	
+	move	$a0, $s0		# dst
+	add	$a1, $s2, $s7		# dst_x + src->alto - 1 - y
+	addi	$a1, $a1, -1
+	sub	$a1, $a1, $s5
+	add	$a2, $s3, $s4		# dst_y + x
+	move	$a3, $v0		# p
+	jal	imagen_set_pixel	#imagen_set_pixel(dst, dst_x + x, dst_y + y, p);
+	
+B8_3:	addi	$s4, $s4, 1
+	j	B8_1
+	
+B8_2:	addi	$s5, $s5, 1
+	j	B8_0
+
+B8_5:	
+	lw	$s7, 32($sp)
+	lw	$s6, 28($sp)
+	lw	$s5, 24($sp)
+	lw	$s4, 20($sp)
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 36
+	jr	$ra
+	
 
 pieza_aleatoria:
 	addiu	$sp, $sp, -4
