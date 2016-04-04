@@ -137,10 +137,63 @@ imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	jr	$ra
 
 imagen_set_pixel:
-	break
+	addi	$sp, $sp, -8
+	sw	$s0, 4($sp)		# color
+	sw	$ra, 0($sp)
+
+	move	$s0, $a3		# Pixel color
+
+	jal	imagen_pixel_addr
+	sb	$s0 ,0($v0)		# *pixel = color;
+	
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 8
+	jr	$ra
 
 imagen_clean:
-	break
+	addi	$sp, $sp, -28
+	sw	$s5, 24($sp)		# Pixel fondo
+	sw	$s4, 20($sp)		# Pixel fondo
+	sw	$s3, 16($sp)		# Pixel fondo
+	sw	$s2, 12($sp)		# Pixel fondo
+	sw	$s1, 8($sp)		# Pixel fondo
+	sw	$s0, 4($sp)		# Imagen *img
+	sw	$ra, 0($sp)
+	
+	move	$t0, $a0		# Imagen *img
+	lw	$s5, 0($t0)		# img->ancho
+	lw	$s4, 4($t0)		# img->alto
+	addi	$s0, $t0, 8		# img->data[IMAGEN_MAX_SIZE]
+	move	$s1, $a1		# Pixel fondo
+	li	$s2, 0			# int y = 0
+	li	$s3, 0			# int x = 0
+	
+		
+	
+B3_0:	bgt	$s2, $s4, B3_1		# for (int y = 0; y < img->alto; ++y) {
+
+
+B3_1:	bgt	$s3, $s5, B3_2		# for (int x = 0; x < img->ancho; ++x) {
+
+	move	$a0, $s0
+	move	$a1, $s3
+	move	$a2, $s2
+	move	$a3, $s1
+	jal	imagen_set_pixel
+	
+	j	B3_0
+	j	B3_1
+	
+B3_2:	lw	$s5, 24($sp)
+	lw	$s4, 20($sp)
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 28
+	jr	$ra
         
 imagen_init:
 	break
