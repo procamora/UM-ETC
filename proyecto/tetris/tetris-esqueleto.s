@@ -591,13 +591,13 @@ B23_2:	jal	clear_screen		# clear_screen()
 
 ######################################
 la $a0, pieza_actual
-li $t0, 20
+li $t0, 5
 sw $t0, 0($a0)
 sw $t0, 4($a0)
-li $a1, 'x'
-#li $a2, 22
-#li $a3, 32
-jal imagen_clean
+
+la $a1, pieza_jota
+
+jal imagen_copy
 la $a0, pieza_actual
 #la $a0, pieza_jota
 jal imagen_print
