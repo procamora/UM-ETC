@@ -116,7 +116,8 @@ str002:
 
 
 	.text	
-
+	
+	
 imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 					# pixel_addr = &data + y*ancho + x
 	lw	$t1, 0($a0)		# $a0 = dirección de la imagen 
@@ -127,6 +128,7 @@ imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
 	jr	$ra
 
+	
 imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)		# guardamos $ra porque haremos un jal
@@ -136,6 +138,7 @@ imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+	
 imagen_set_pixel:
 	addiu	$sp, $sp, -8
 	sw	$s0, 4($sp)		# color
@@ -150,6 +153,7 @@ imagen_set_pixel:
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 8
 	jr	$ra
+
 
 imagen_clean:
 	addiu	$sp, $sp, -28
@@ -166,9 +170,7 @@ imagen_clean:
 	lw	$s4, 4($s0)		# img->alto
 	move	$s1, $a1		# Pixel fondo
 	li	$s2, 0			# int y = 0
-	
-		
-	
+
 B3_0:	bge	$s2, $s4, B3_5		# for (int y = 0; y < img->alto; ++y) {
 	li	$s3, 0			# int x = 0
 B3_1:	bge	$s3, $s5, B3_2		# for (int x = 0; x < img->ancho; ++x) {
@@ -210,6 +212,7 @@ imagen_init:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+	
 imagen_copy:
 	addi	$sp, $sp, -28
 	sw	$s5, 24($sp)
@@ -267,6 +270,7 @@ B5_3:	lw	$s5, 24($sp)
 	addiu	$sp, $sp, 28
 	jr	$ra
 
+	
 imagen_print:				# $a0 = img
 	addiu	$sp, $sp, -24
 	sw	$ra, 20($sp)
@@ -307,6 +311,7 @@ B6_5:	lw	$s0, 0($sp)
 	addiu	$sp, $sp, 24
 	jr	$ra
 
+	
 imagen_dibuja_imagen:			# ($a0, $a1, $a2, $a3) = (*dst, *src, dst_x, dst_y)
 	addi	$sp, $sp, -36
 	sw	$s7, 32($sp)		# src->alto;
@@ -348,7 +353,6 @@ B7_3:	addi	$s4, $s4, 1
 	
 B7_2:	addi	$s5, $s5, 1
 	j	B7_0
-	
 	
 B7_5:	
 	lw	$s7, 32($sp)
@@ -436,6 +440,7 @@ pieza_aleatoria:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+	
 actualizar_pantalla:
 	addiu	$sp, $sp, -16
 	sw	$ra, 12($sp)
@@ -502,8 +507,27 @@ B10_6:	la	$s0, pantalla
 	addiu	$sp, $sp, 16
 	jr	$ra
 
+	
 nueva_pieza_actual:
-	break
+	addiu	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	jal	pieza_aleatoria
+	la	$a0, pieza_actual
+	move	$a1, $v0
+	jal	imagen_copy
+	
+	lw	$t0, pieza_actual_x	# pieza_actual_x = 8;
+	li	$t1, 8
+	sw	$t1, 0($t0)
+	lw	$t0, pieza_actual_y	# pieza_actual_y = 0;
+	li	$t1, 0
+	sw	$t1, 0($t0)
+
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
+	jr	$ra
+	
 
 probar_pieza:				# ($a0, $a1, $a2) = (pieza, x, y)
 	addiu	$sp, $sp, -32
@@ -569,20 +593,25 @@ B12_13:	lw	$s0, 0($sp)
 	addiu	$sp, $sp, 32
 	jr	$ra
 
+	
 intentar_movimiento:
 	break
 
+	
 bajar_pieza_actual:
 	break
 
+	
 intentar_rotar_pieza_actual:
 	break
 
+	
 tecla_salir:
 	li	$v0, 1
 	sb	$v0, acabar_partida	# acabar_partida = true
 	jr	$ra
 
+	
 tecla_izquierda:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -594,6 +623,7 @@ tecla_izquierda:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+	
 tecla_derecha:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -605,6 +635,7 @@ tecla_derecha:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+	
 tecla_abajo:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -613,6 +644,7 @@ tecla_abajo:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+	
 tecla_rotar:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -620,6 +652,7 @@ tecla_rotar:
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
+
 
 procesar_entrada:
 	addiu	$sp, $sp, -20
@@ -650,6 +683,7 @@ B21_3:	addiu	$s1, $s1, 8		# ++i, $s1 += 8
 	lw	$ra, 16($sp)
 	addiu	$sp, $sp, 20
 	jr	$ra
+
 
 jugar_partida:
 	addiu	$sp, $sp, -12	
@@ -690,6 +724,7 @@ B22_5:	lw	$s0, 0($sp)
 	lw	$ra, 8($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
+
 
 	.globl	main
 main:					# ($a0, $a1) = (argc, argv) 
@@ -745,11 +780,13 @@ print_character:
 	syscall	
 	jr	$ra
 
+	
 print_string:
 	li	$v0, 4
 	syscall	
 	jr	$ra
 
+	
 get_time:
 	li	$v0, 30
 	syscall	
@@ -757,32 +794,39 @@ get_time:
 	move	$v1, $a1
 	jr	$ra
 
+	
 read_character:
 	li	$v0, 12
 	syscall	
 	jr	$ra
 
+	
 clear_screen:
 	li	$v0, 39
 	syscall	
 	jr	$ra
 
+	
 mips_exit:
 	li	$v0, 17
 	syscall	
 	jr	$ra
 
+	
 random_int_range:
 	li	$v0, 42
 	syscall	
 	move	$v0, $a0
 	jr	$ra
 
+	
 keyio_poll_key:
 	li	$v0, 0
 	lb	$t0, 0xffff0000
 	andi	$t0, $t0, 1
 	beqz	$t0, keyio_poll_key_return
 	lb	$v0, 0xffff0004
+
+
 keyio_poll_key_return:
 	jr	$ra
