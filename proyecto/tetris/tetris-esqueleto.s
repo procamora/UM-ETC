@@ -137,14 +137,14 @@ imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	jr	$ra
 
 imagen_set_pixel:
-	addi	$sp, $sp, -8
+	addiu	$sp, $sp, -8
 	sw	$s0, 4($sp)		# color
 	sw	$ra, 0($sp)
 
 	move	$s0, $a3		# Pixel color
 
 	jal	imagen_pixel_addr
-	sb	$s0 ,0($v0)		# *pixel = color;
+	sb	$s0, 0($v0)		# *pixel = color;
 	
 	lw	$s0, 4($sp)
 	lw	$ra, 0($sp)
@@ -152,7 +152,7 @@ imagen_set_pixel:
 	jr	$ra
 
 imagen_clean:
-	addi	$sp, $sp, -28
+	addiu	$sp, $sp, -28
 	sw	$s5, 24($sp)		# 
 	sw	$s4, 20($sp)		# 
 	sw	$s3, 16($sp)		# 
@@ -161,16 +161,15 @@ imagen_clean:
 	sw	$s0, 4($sp)		# Imagen *img
 	sw	$ra, 0($sp)
 	
-	move	$t0, $a0		# Imagen *img
-	lw	$s5, 0($t0)		# img->ancho
-	lw	$s4, 4($t0)		# img->alto
-	addi	$s0, $t0, 8		# img->data[IMAGEN_MAX_SIZE]
+	move	$s0, $a0		# Imagen *img
+	lw	$s5, 0($s0)		# img->ancho
+	lw	$s4, 4($s0)		# img->alto
 	move	$s1, $a1		# Pixel fondo
 	li	$s2, 0			# int y = 0
 	
 		
 	
-B3_0:	bgt	$s2, $s4, B3_5		# for (int y = 0; y < img->alto; ++y) {
+B3_0:	bge	$s2, $s4, B3_5		# for (int y = 0; y < img->alto; ++y) {
 
 
 	li	$s3, 0			# int x = 0
@@ -182,7 +181,6 @@ B3_1:	bge	$s3, $s5, B3_2		# for (int x = 0; x < img->ancho; ++x) {
 	move	$a3, $s1
 	jal	imagen_set_pixel
 	addi	$s3, $s3, 1
-	
 	j	B3_1
 	
 B3_2:	addi	$s2, $s2, 1
@@ -199,7 +197,7 @@ B3_5:	lw	$s5, 24($sp)
 	jr	$ra
         
 imagen_init:
-	addi	$sp, $sp, -4
+	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 	
 	lw	$a1, 0($a0)		# img->ancho = ancho;
@@ -239,8 +237,8 @@ B5_0:	bge	$s3, $s5, B5_3
 	#for (int x = 0; x < src->ancho; ++x) {
 B5_1:	bge	$s2, $s4, B5_2
 	move	$a0, $s1		#Imagen *img
-	move	$a1, 			#int x
-	move	$a2, 			#int y
+	move	$a1, $s2			#int x
+	move	$a2, $s3			#int y
 	jal	imagen_get_pixel
 	
 	move	$a0, $s1
@@ -590,6 +588,26 @@ main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
+
+######################################
+la $a0, pieza_actual
+li $t0, 20
+sw $t0, 0($a0)
+sw $t0, 4($a0)
+li $a1, 'x'
+#li $a2, 22
+#li $a3, 32
+jal imagen_clean
+la $a0, pieza_actual
+#la $a0, pieza_jota
+jal imagen_print
+
+
+
+li $v0, 10
+syscall
+############################################
+
 	la	$a0, str000
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n")
 	jal	read_character		# char opc = read_character()
