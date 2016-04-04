@@ -426,11 +426,11 @@ pieza_aleatoria:
 	sw	$ra, 0($sp)
 	li	$a0, 0
 	li	$a1, 7
-	jal	random_int_range	# $v0 â†? random_int_range(0, 7)
+	jal	random_int_range	# $v0 ? random_int_range(0, 7)
 	sll	$t1, $v0, 2
 	la	$v0, piezas
 	addu	$t1, $v0, $t1		# $t1 = piezas + $v0*4
-	lw	$v0, 0($t1)		# $v0 â†? piezas[$v0]
+	lw	$v0, 0($t1)		# $v0 ? piezas[$v0]
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
