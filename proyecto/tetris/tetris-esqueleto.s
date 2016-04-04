@@ -225,9 +225,9 @@ imagen_copy:
 	move	$s1, $a1		# Imagen *src
 	
 	lw	$s4, 0($s1)		# src->ancho;
-	sw	$s4, 0($s1)		# dst->ancho = src->ancho;
+	sw	$s4, 0($s0)		# dst->ancho = src->ancho;
 	lw	$s5, 4($s1)		# src->alto;
-	sw	$s5, 4($s1)		# dst->alto = src->alto;
+	sw	$s5, 4($s0)		# dst->alto = src->alto;
 	
 	li	$s3, 0			# int y = 0
 	
@@ -590,16 +590,16 @@ main:					# ($a0, $a1) = (argc, argv)
 B23_2:	jal	clear_screen		# clear_screen()
 
 ######################################
-la $a0, pieza_actual
-li $t0, 5
-sw $t0, 0($a0)
-sw $t0, 4($a0)
+la $a1, pieza_actual
+li $t0, 10
+sw $t0, 0($a1)
+sw $t0, 4($a1)
 
-la $a1, pieza_jota
+la $a0, pieza_jota
 
 jal imagen_copy
+
 la $a0, pieza_actual
-#la $a0, pieza_jota
 jal imagen_print
 
 
