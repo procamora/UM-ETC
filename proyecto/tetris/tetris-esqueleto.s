@@ -170,8 +170,6 @@ imagen_clean:
 		
 	
 B3_0:	bge	$s2, $s4, B3_5		# for (int y = 0; y < img->alto; ++y) {
-
-
 	li	$s3, 0			# int x = 0
 B3_1:	bge	$s3, $s5, B3_2		# for (int x = 0; x < img->ancho; ++x) {
 
@@ -195,6 +193,7 @@ B3_5:	lw	$s5, 24($sp)
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 28
 	jr	$ra
+
         
 imagen_init:
 	addiu	$sp, $sp, -4
@@ -258,8 +257,8 @@ B5_1:	bge	$s2, $s4, B5_2
 B5_2:	addi	$s3, $s3, 1
 	j	B5_0
 	
-B5_3:	lw	$s3, 24($sp)
-	lw	$s3, 20($sp)
+B5_3:	lw	$s5, 24($sp)
+	lw	$s4, 20($sp)
 	lw	$s3, 16($sp)
 	lw	$s2, 12($sp)
 	lw	$s1, 8($sp)
@@ -308,8 +307,62 @@ B6_5:	lw	$s0, 0($sp)
 	addiu	$sp, $sp, 24
 	jr	$ra
 
-imagen_dibuja_imagen:
-	break
+imagen_dibuja_imagen:			# ($a0, $a1, $a2, $a3) = (*dst, *src, dst_x, dst_y)
+	addi	$sp, $sp, -36
+	sw	$s7, 32($sp)		# src->alto;
+	sw	$s6, 28($sp)		# src->ancho;
+	sw	$s5, 24($sp)		# int y
+	sw	$s4, 20($sp)		# int x
+	sw	$s3, 16($sp)		# int dst_y
+	sw	$s2, 12($sp)		# int dst_x
+	sw	$s1, 8($sp)		# Imagen *src
+	sw	$s0, 4($sp)		# Imagen *dst
+	sw	$ra, 0($sp)
+
+	move	$s0, $a0		# Imagen *dst
+	move	$s1, $a1		# Imagen *src
+	move	$s2, $a2		# int dst_x
+	move	$s3, $a3		# int dst_y
+	li	$s5, 0			# int y
+	lw	$s6, 0($s1)		# src->ancho;
+	lw	$s7, 4($s1)		# src->alto;
+
+B7_0:	bge	$s5, $s7, B7_5
+	li	$s4, 0			# int x
+B7_1:	bge	$s4, $s4, B7_2
+	
+	move	$a0, $s1
+	move	$a1, $s4
+	move	$a2, $s5
+	jal	imagen_get_pixel
+	beqz	$v0, B7_3
+	
+	move	$a0, $s0
+	add	$a1, $s2, $s4		#dst_x + x
+	add	$a2, $s3, $s5		#dst_y + y
+	move	$a3, $v0		
+	jal	imagen_set_pixel	#imagen_set_pixel(dst, dst_x + x, dst_y + y, p);
+	
+B7_3:	addi	$s4, $s4, 1
+	j	B7_1
+	
+B7_2:	addi	$s5, $s5, 1
+	j	B7_0
+	
+	
+B7_5:	
+	lw	$s7, 32($sp)
+	lw	$s6, 28($sp)
+	lw	$s5, 24($sp)
+	lw	$s4, 20($sp)
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 36
+	jr	$ra
+	
 
 imagen_dibuja_imagen_rotada:
 	break
