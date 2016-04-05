@@ -3,7 +3,11 @@
 	<tr>
 		<td align="center" valign="top" style="background-image:url(http://s14.postimg.org/qzrysxvm9/portada1.png); background-size:cover; background-repeat:no-repeat; width:393;">
 			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-			<h3>FECHA</h3>
+			
+			
+			<h3>06/04/2016</h3>
+			
+			
 			<p>
 			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -12,12 +16,21 @@
 		</td>
 		<td align="center" valign="top">
 			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-			<h1>Nombre del trabajo</h1>
-			<h3>Asignatura</h3>
+			
+			
+			<h1>Entrega Boletines de Ensamblador </h1>
+			<h6>ESTRUCTURA Y TECNOLOGÍA DE COMPUTADORES</h6>
+			
+			
 			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-			<h5>Pablo Jose Rocamora Zamora</h5>
+			
+			
+			<h5>Pablo Jose Rocamora Zamora 48743203Q</h5>
+			<h5>Arturo Cordoba</h5>
+			
+			
 		</td>
 	</tr>
 </table>
@@ -25,7 +38,6 @@
 
 
 # Práctica 2: Interger_to_string
-
 
 ###Parte 1
 Me ha parecido la parte más compleja por la necesidad de usar las operaciones *lb* y *sb* ya que en ese momento aún no terminaba de entender bien su funcionamiento.
@@ -42,14 +54,14 @@ Lo que más me ha costado de esta parte ha sido darme cuenta de que para añadir
 Esta parte no ha supuesto ningún problema ya que solamente fue poner un if al principio para comprobar si el numero era 0.
 
 
-
 ###Parte 4
 
 Esta parte ha sido trivial implementarla partiendo de la anterior.
 
 
-# Práctica 3: Compara_enteros
 
+
+# Práctica 3: Compara_enteros
 
 ###compara_enteros:
 Esta función ha sido trivial de implementar, lo he hecho a la primera.
@@ -69,7 +81,6 @@ Algunas erratas que he cometido en esta función y que más tarde averigüe son:
 	addi	$s0, $s0, 1	#++i
 	addi	$s1, $s1, 4	#entero + 4
 	
-
 
 ###inicializa_vector:
 
