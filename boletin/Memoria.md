@@ -86,4 +86,14 @@ Algunas erratas que he cometido en esta función y que más tarde averigüe son:
 
 El principal problema que he tenido era que cuando inicializaba el vector con un tamaño inferior al anterior al hacer las comparaciones me cogía 1 número de más del otro vector, por lo que al hacer la comparación estaba con un operador de mas, estuve repasando todos los comparadores para ver si encontraba algún error pero no lo encontré, así que lo que hice fue en la función, antes de llenarla con los nuevos números poner todo el vector anterior con `\0`
 
+```
+	la	$t1, cadena_resultado
+	li	$t2, 0
+IV_cle:	bge	$t2, $t0, IV_fisi	# blucle para vaciar cadena_resultado
+	sw	$zero, 0($t1)
+	addi	$t1, $t1, 4
+	addi	$t2, $t2, 1
+	j	IV_cle
 
+IV_fisi: ...
+```
