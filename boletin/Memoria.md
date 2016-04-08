@@ -40,25 +40,41 @@
 # Práctica 2: Interger_to_string
 
 ###Parte 1
-Me ha parecido la parte más compleja por la necesidad de usar las operaciones *lb* y *sb* ya que en ese momento aún no terminaba de entender bien su funcionamiento.
+Me ha parecido la parte más compleja por la necesidad de usar las operaciones `lb` y `sb`,  ya que en ese momento aún no terminaba de entender bien su funcionamiento.
+
+```
+lb	$t3, 0($a2)
+lb	$t4, 0($t0)
+sb	$t3, 0($t0)
+sb	$t4, 0($a2)
+```
 
 
 ###Parte 2
-Lo que más me ha costado de esta parte ha sido darme cuenta de que para añadir el *\0* al final tenía que sumar 1 en vez de 4, ya que es un byte y no un integer.
+Lo que más me ha costado de esta parte, ha sido darme cuenta de que para añadir el **\0** al final tenía que sumar **1** en vez de **4**, ya que es un byte y no un integer.
 
-	addiu	$t0, $t0, 1
-	sb	$zero, 0($t0)		# *p = '\0'
+```
+addiu	$t0, $t0, 1
+sb	$zero, 0($t0)		# *p = '\0'
+```
 
 
 ###Parte 3
-Esta parte no ha supuesto ningún problema ya que solamente fue poner un if al principio para comprobar si el numero era 0.
+Esta parte no ha supuesto ningún problema ya que solamente fue poner un `if` al principio para comprobar si el numero era **0**.
+
+```
+abs	$t1, $a0		#move	$t1, $a0		# int i = n
+bnez	$t1, B3_3
+...
+
+B3_3:  
+	blez	$t1, B3_6		# si i <= 0 salta el bucle
+```
 
 
 ###Parte 4
 
 Esta parte ha sido trivial implementarla partiendo de la anterior.
-
-
 
 
 # Práctica 3: Compara_enteros
@@ -67,20 +83,22 @@ Esta parte ha sido trivial implementarla partiendo de la anterior.
 Esta función ha sido trivial de implementar, lo he hecho a la primera.
 
 
-
-
 ###compara_vector_con_escalar:
 
 Algunas erratas que he cometido en esta función y que más tarde averigüe son:
-1. Apilar y desapilar $a0 porque pensaba que era necesario.
+1. Apilar y desapilar `$a0` porque pensaba que era necesario.
+
 2. En el for tenía puesto `bgt` en vez de `bge`
-`CS_for:	bge	$s0, $s6, CS_fin`
+
+	`CS_for:	bge	$s0, $s6, CS_fin`
+	
 3. Las 3 operaciones de suma las hacia al principio, me confundí por el `++i` del bucle `for`
-	
-	addi	$s2, $s2, 1
-	addi	$s0, $s0, 1	#++i
-	addi	$s1, $s1, 4	#entero + 4
-	
+```
+addi	$s2, $s2, 1
+addi	$s0, $s0, 1	#++i
+addi	$s1, $s1, 4	#entero + 4
+```
+
 
 ###inicializa_vector:
 
@@ -97,3 +115,5 @@ IV_cle:	bge	$t2, $t0, IV_fisi	# blucle para vaciar cadena_resultado
 
 IV_fisi: ...
 ```
+
+
