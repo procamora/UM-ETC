@@ -598,12 +598,14 @@ intentar_movimiento:			# ($a0, $a1) = (x, y)
 	
 	move	$s0, $a0		# int x
 	move	$s1, $a1		# int y
+	move	$a1, $s0
+	move	$a2, $s1
 	la	$a0, pieza_actual
 	jal	probar_pieza
 	beqz	$v0, B13_0		# if (probar_pieza(pieza_actual, x, y)) { == if(1/True)..
-	lw	$t0, pieza_actual_x	# pieza_actual_x = x;
+	la	$t0, pieza_actual_x	# pieza_actual_x = x;
 	sw	$s0, 0($t0)
-	lw	$t0, pieza_actual_y	# pieza_actual_y = y;
+	la	$t0, pieza_actual_y	# pieza_actual_y = y;
 	sw	$s1, 0($t0)
 	li	$v0, 1
 	j	B13_1
@@ -808,7 +810,9 @@ main:					# ($a0, $a1) = (argc, argv)
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
 ###################################
-j _nueva_pieza_actual
+j t_sig
+
+j _intentar_movimiento
 
 
 
@@ -887,9 +891,20 @@ jal imagen_print
 j exit
 
 
+_intentar_movimiento:			# ($a0, $a1) = (x, y)
+jal nueva_pieza_actual
+li $a0, 2
+li $a1, 5
+jal intentar_movimiento
+la $a0, pieza_actual
+jal imagen_print
+j exit
+
+
 exit:
 jal 	mips_exit
 ####################################
+t_sig:
 	la	$a0, str000
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n")
 	jal	read_character		# char opc = read_character()
