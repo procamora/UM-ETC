@@ -121,10 +121,10 @@ str002:
 imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 					# pixel_addr = &data + y*ancho + x
 	lw	$t1, 0($a0)		# $a0 = dirección de la imagen 
-					# $t1 �? ancho
+					# $t1 �? ancho
 	mul	$t1, $t1, $a2		# $a2 * ancho
 	addu	$t1, $t1, $a1		# $a2 * ancho + $a1
-	addiu	$a0, $a0, 8		# $a0 �? dirección del array data
+	addiu	$a0, $a0, 8		# $a0 �? dirección del array data
 	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
 	jr	$ra
 
@@ -201,10 +201,12 @@ imagen_init:				# ($a0, $a1, $a2, $a3) = (img, ancho, alto, fondo)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 	
-	lw	$a1, 0($a0)		# img->ancho = ancho;
-	lw	$a2, 4($a0)		# img->alto = alto;
+	move	$t0, $a0
+	sw	$a1, 0($t0)		# img->ancho = ancho;
+	sw	$a2, 4($t0)		# img->alto = alto;
 	
 	# $a0 -> Imagen *img
+	move	$a0, $t0
 	move	$a1, $a3
 	jal	imagen_clean
 	
@@ -806,6 +808,43 @@ main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
+###################################
+j _imagen_init
+
+
+
+_imagen_clean:
+la $a0, pieza_actual
+li $t0, 9
+sw $t0, 0($a0)
+li $t0, 5
+sw $t0, 4($a0)
+li $a1, '+'
+jal imagen_clean
+la $a0, pieza_actual
+jal imagen_print
+j exit
+
+_imagen_init:
+la $a0, pieza_actual
+li $t0, 7
+sw $t0, 0($a0)
+li $t0, 5
+sw $t0, 4($a0)
+li $a1, 8
+li $a2, 4
+li $a3, '*'
+jal imagen_init
+la $a0, pieza_actual
+jal imagen_print
+j exit
+
+
+
+
+exit:
+jal 	mips_exit
+####################################
 	la	$a0, str000
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n")
 	jal	read_character		# char opc = read_character()
