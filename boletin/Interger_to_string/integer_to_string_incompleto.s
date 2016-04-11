@@ -147,8 +147,7 @@ integer_to_string_v4:			# ($a0, $a1, $a2) = (n, base, buf)
 	li	$t2, 0
 	addiu	$t2, $t2, '0'
 	sb 	$t2, 0($t0)
-	addiu	$t0, $t0, 1		# 
-	sb	$zero, 0($t0)		# *p = '\0'
+	sb	$zero, 1($t0)		# *p = '\0'
 	#sub	$t0, $t0, 1
 	j	B4_10
 
