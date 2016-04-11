@@ -201,12 +201,10 @@ imagen_init:				# ($a0, $a1, $a2, $a3) = (img, ancho, alto, fondo)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 	
-	move	$t0, $a0
-	sw	$a1, 0($t0)		# img->ancho = ancho;
-	sw	$a2, 4($t0)		# img->alto = alto;
+	sw	$a1, 0($a0)		# img->ancho = ancho;
+	sw	$a2, 4($a0)		# img->alto = alto;
 	
 	# $a0 -> Imagen *img
-	move	$a0, $t0
 	move	$a1, $a3
 	jal	imagen_clean
 	
@@ -331,7 +329,7 @@ imagen_dibuja_imagen:			# ($a0, $a1, $a2, $a3) = (*dst, *src, dst_x, dst_y)
 
 B7_0:	bge	$s5, $s7, B7_5
 	li	$s4, 0			# int x
-B7_1:	bge	$s4, $s4, B7_2
+B7_1:	bge	$s4, $s6, B7_2
 	
 	move	$a0, $s1
 	move	$a1, $s4
@@ -809,7 +807,7 @@ main:					# ($a0, $a1) = (argc, argv)
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
 ###################################
-j _imagen_init
+j _imagen_dibuja_imagen
 
 
 
@@ -827,9 +825,9 @@ j exit
 
 _imagen_init:
 la $a0, pieza_actual
-li $t0, 7
+li $t0, 30
 sw $t0, 0($a0)
-li $t0, 5
+li $t0, 30
 sw $t0, 4($a0)
 li $a1, 8
 li $a2, 4
@@ -838,6 +836,35 @@ jal imagen_init
 la $a0, pieza_actual
 jal imagen_print
 j exit
+
+
+_imagen_copy:
+la $a0, pieza_actual	#dst
+la $a1, pieza_jota	#src
+jal imagen_copy
+la $a0, pieza_actual
+jal imagen_print
+j exit
+
+
+_imagen_dibuja_imagen:
+#magen *dst, Imagen *src, int dst_x, int dst_y
+la $a0, pieza_actual	#dst
+li $t0, 23
+sw $t0, 0($a0)
+sw $t0, 4($a0)
+la $a1, pieza_ele	#src
+li $a2, 8
+li $a3, 8
+jal imagen_dibuja_imagen
+la $a0, pieza_actual
+jal imagen_print
+j exit
+
+
+
+
+
 
 
 
