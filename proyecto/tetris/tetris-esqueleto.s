@@ -879,8 +879,11 @@ j exit
 
 
 
-
-
+_nueva_pieza_actual:
+jal nueva_pieza_actual
+la $a0, pieza_actual
+jal imagen_print
+j exit
 
 
 exit:
