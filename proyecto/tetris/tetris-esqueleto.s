@@ -1,6 +1,13 @@
 # Version incompleta del tetris 
 # Sincronizada con tetris.s:r2563
-        
+
+
+#i Rotar la pieza 90 grados
+#j Mover la pieza hacia la izquierda
+#l Mover la pieza hacia la derecha
+#k Mover la pieza hacia abajo
+#x Salir al menú
+
 	.data	
 
 	.align	2
@@ -984,3 +991,4 @@ keyio_poll_key:
 
 keyio_poll_key_return:
 	jr	$ra
+
