@@ -385,7 +385,7 @@ imagen_dibuja_imagen_rotada:
 
 B8_0:	bge	$s5, $s7, B8_5
 	li	$s4, 0			# int x
-B8_1:	bge	$s4, $s4, B8_2
+B8_1:	bge	$s4, $s6, B8_2
 	
 	move	$a0, $s1
 	move	$a1, $s4
@@ -807,7 +807,7 @@ main:					# ($a0, $a1) = (argc, argv)
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
 ###################################
-j _imagen_dibuja_imagen
+j _imagen_dibuja_imagen_rotada
 
 
 
@@ -862,6 +862,20 @@ jal imagen_print
 j exit
 
 
+
+_imagen_dibuja_imagen_rotada:
+#magen *dst, Imagen *src, int dst_x, int dst_y
+la $a0, pieza_actual	#dst
+li $t0, 23
+sw $t0, 0($a0)
+sw $t0, 4($a0)
+la $a1, pieza_ele	#src
+li $a2, 8
+li $a3, 8
+jal imagen_dibuja_imagen_rotada
+la $a0, pieza_actual
+jal imagen_print
+j exit
 
 
 
