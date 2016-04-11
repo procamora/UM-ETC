@@ -512,11 +512,12 @@ nueva_pieza_actual:
 	move	$a1, $v0
 	jal	imagen_copy
 	
-	lw	$t0, pieza_actual_x	# pieza_actual_x = 8;
+	la	$t0, pieza_actual_x	# pieza_actual_x = 8;
 	li	$t1, 8
 	sw	$t1, 0($t0)
-	lw	$t0, pieza_actual_y	# pieza_actual_y = 0;
-	li	$t1, 0
+
+	la	$t0, pieza_actual_y	# pieza_actual_y = 0;
+	li 	$t1, 0
 	sw	$t1, 0($t0)
 
 	lw	$ra, 0($sp)
@@ -807,7 +808,7 @@ main:					# ($a0, $a1) = (argc, argv)
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
 ###################################
-j _imagen_dibuja_imagen_rotada
+j _nueva_pieza_actual
 
 
 
