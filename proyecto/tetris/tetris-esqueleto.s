@@ -6,7 +6,7 @@
 #j Mover la pieza hacia la izquierda
 #l Mover la pieza hacia la derecha
 #k Mover la pieza hacia abajo
-#x Salir al men�
+#x Salir al menu
 
 	.data	
 
@@ -128,10 +128,10 @@ str002:
 imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 					# pixel_addr = &data + y*ancho + x
 	lw	$t1, 0($a0)		# $a0 = dirección de la imagen 
-					# $t1 �? ancho
+					# $t1 = ancho
 	mul	$t1, $t1, $a2		# $a2 * ancho
 	addu	$t1, $t1, $a1		# $a2 * ancho + $a1
-	addiu	$a0, $a0, 8		# $a0 �? dirección del array data
+	addiu	$a0, $a0, 8		# $a0 = dirección del array data
 	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
 	jr	$ra
 
@@ -433,11 +433,11 @@ pieza_aleatoria:
 	sw	$ra, 0($sp)
 	li	$a0, 0
 	li	$a1, 7
-	jal	random_int_range	# $v0 ? random_int_range(0, 7)
+	jal	random_int_range	# $v0 = random_int_range(0, 7)
 	sll	$t1, $v0, 2
 	la	$v0, piezas
 	addu	$t1, $v0, $t1		# $t1 = piezas + $v0*4
-	lw	$v0, 0($t1)		# $v0 ? piezas[$v0]
+	lw	$v0, 0($t1)		# $v0 = piezas[$v0]
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
@@ -866,102 +866,6 @@ main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
-###################################
-j t_sig
-
-j _intentar_movimiento
-
-
-
-_imagen_clean:
-la $a0, pieza_actual
-li $t0, 9
-sw $t0, 0($a0)
-li $t0, 5
-sw $t0, 4($a0)
-li $a1, '+'
-jal imagen_clean
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-_imagen_init:
-la $a0, pieza_actual
-li $t0, 30
-sw $t0, 0($a0)
-li $t0, 30
-sw $t0, 4($a0)
-li $a1, 8
-li $a2, 4
-li $a3, '*'
-jal imagen_init
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-
-_imagen_copy:
-la $a0, pieza_actual	#dst
-la $a1, pieza_jota	#src
-jal imagen_copy
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-
-_imagen_dibuja_imagen:
-#magen *dst, Imagen *src, int dst_x, int dst_y
-la $a0, pieza_actual	#dst
-li $t0, 23
-sw $t0, 0($a0)
-sw $t0, 4($a0)
-la $a1, pieza_ele	#src
-li $a2, 8
-li $a3, 8
-jal imagen_dibuja_imagen
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-
-
-_imagen_dibuja_imagen_rotada:
-#magen *dst, Imagen *src, int dst_x, int dst_y
-la $a0, pieza_actual	#dst
-li $t0, 23
-sw $t0, 0($a0)
-sw $t0, 4($a0)
-la $a1, pieza_ele	#src
-li $a2, 8
-li $a3, 8
-jal imagen_dibuja_imagen_rotada
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-
-
-_nueva_pieza_actual:
-jal nueva_pieza_actual
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-
-_intentar_movimiento:			# ($a0, $a1) = (x, y)
-jal nueva_pieza_actual
-li $a0, 2
-li $a1, 5
-jal intentar_movimiento
-la $a0, pieza_actual
-jal imagen_print
-j exit
-
-
-exit:
-jal 	mips_exit
-####################################
-t_sig:
 	la	$a0, str000
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n")
 	jal	read_character		# char opc = read_character()
