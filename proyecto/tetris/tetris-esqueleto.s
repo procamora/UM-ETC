@@ -122,6 +122,10 @@ str002:
 	.asciiz		"\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n"
 
 
+buffer:	.space 256	#buffer para integer_to_string
+puntuacion:
+	.asciiz		"Puntuacion: "	
+
 	.text	
 	
 	
@@ -811,8 +815,8 @@ B22_5:	lw	$s0, 0($sp)
 	jr	$ra
 
 
-integer_to_string:			# ($a0, $a1, $a2) = (n, base, buf)
-	move 	$t0, $a2		# char *p = buff
+integer_to_string:			# ($a0, $a1) = (n, buf)
+	move 	$t0, $a1		# char *p = buff
 	# for (int i = n; i > 0; i = i / base) {
 	abs	$t1, $a0		#move	$t1, $a0		# int i = n
 	bnez	$t1, B24_3
@@ -825,7 +829,9 @@ integer_to_string:			# ($a0, $a1, $a2) = (n, base, buf)
 
 B24_3:  
 	blez	$t1, B24_6		# si i <= 0 salta el bucle
-	div	$t1, $a1		# i / base
+	#div	$t1, BASE!!!!! NO SE CUAL ES		
+	li	$t7, 10
+	div	$t1, $t7		# i / base
 	mflo	$t1			# i = i / base
 	mfhi	$t2
 	blt	$t2, 10, B24_4		# d = i % base
@@ -860,9 +866,12 @@ B24_10:	jr	$ra
 
 
 
+imagen_dibuja_cadena:			# ($a0, $a1, a2) = (direcc_imagen, coord_img, direcc_cadena) 
+	break
+
 
 	.globl	main
-main:					# ($a0, $a1) = (argc, argv) 
+main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
