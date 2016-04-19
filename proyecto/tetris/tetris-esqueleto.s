@@ -123,8 +123,15 @@ str002:
 
 
 buffer:	.space 256	#buffer para integer_to_string
+
 puntuacion:
-	.asciiz		"Puntuacion: "	
+	.asciiz		"Puntuacion: "
+
+num_punt:
+	.word	0
+
+test:	.asciiz		"\n\n"	
+
 
 	.text	
 	
@@ -458,6 +465,23 @@ actualizar_pantalla:
 	move	$a0, $s0
 	li	$a1, ' '
 	jal	imagen_clean		# imagen_clean(pantalla, ' ')
+	#######################################################################################################################	
+
+
+	move $a0, $s0			# la	$s0, pantalla
+	la $a1, puntuacion
+	li $a2, 0
+	li $a3, 0
+	jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
+	
+	
+	#move $a0, $s0			# la	$s0, pantalla
+	#la $a1, test
+	#li $a2, 0
+	#li $a3, 0
+	#jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
+	
+	#######################################################################################################################
         # for (int y = 0; y < campo->alto; ++y) {
 	lw	$t1, 4($s2)		# campo->alto
 	beqz	$t1, B10_3		# sale del bucle si campo->alto == 0
@@ -580,6 +604,7 @@ B12_8:	move	$a0, $s2
 	jal	imagen_get_pixel
 	move	$t1, $v0		# imagen_get_pixel(campo, x + i, y + j)
 	li	$v0, 0
+	
 	bnez	$t1, B12_13		# if (imagen_get_pixel(campo, x + i, y + j) != PIXEL_VACIO) return false
 B12_10:	addiu	$s6, $s6, 1		# ++j
 	bltu	$s6, $s7, B12_8		# sigue si j < pieza->alto
@@ -649,6 +674,12 @@ bajar_pieza_actual:			# (void)
 	move	$a3, $s1
 	jal	imagen_dibuja_imagen
 	jal	nueva_pieza_actual
+	
+	la	$t0, num_punt		# aumentar marcador
+	lw	$t1, 0($t0) 
+	addi	$t1, $t1, 1
+	sw	$t1, 0($t0)
+		
 	
 B14_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
@@ -829,7 +860,6 @@ integer_to_string:			# ($a0, $a1) = (n, buf)
 
 B24_3:  
 	blez	$t1, B24_6		# si i <= 0 salta el bucle
-	#div	$t1, BASE!!!!! NO SE CUAL ES		
 	li	$t7, 10
 	div	$t1, $t7		# i / base
 	mflo	$t1			# i = i / base
@@ -854,20 +884,70 @@ B24_6:	bgtz	$a0, B24_7		# if(i<0)
 B24_7:	sb	$zero, 0($t0)		# *p = '\0'
 	sub	$t0, $t0, 1
 	
-B24_8:	blt 	$t0, $a2, B24_10
-	lb	$t3, 0($a2)
+B24_8:	blt 	$t0, $a1, B24_10
+	lb	$t3, 0($a1)
 	lb	$t4, 0($t0)
 	sb	$t3, 0($t0)
-	sb	$t4, 0($a2)
-	add	$a2, $a2, 1
-	add	$t0 $t0, -1
+	sb	$t4, 0($a1)
+	add	$a1, $a1, 1
+	add	$t0, $t0, -1
 	j	B24_8
 B24_10:	jr	$ra
 
 
 
-imagen_dibuja_cadena:			# ($a0, $a1, a2) = (direcc_imagen, coord_img, direcc_cadena) 
-	break
+
+
+
+
+
+imagen_dibuja_cadena:			# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
+	addi	$sp, $sp, -28
+	sw	$s5, 24($sp)		# int y
+	sw	$s4, 20($sp)		# int x
+	sw	$s3, 16($sp)		# int dst_y
+	sw	$s2, 12($sp)		# int dst_x
+	sw	$s1, 8($sp)		# Imagen *src
+	sw	$s0, 4($sp)		# QUITAR
+	sw	$ra, 0($sp)
+
+	move	$s0, $a0		# imagen
+	move	$s1, $a1		# cadena
+	move	$s2, $a2		# int dst_x
+	move	$s3, $a3		# int dst_y
+	li	$s5, 0			# int y
+	li	$s4, 0			# int x
+
+
+B25_0:	lb	$t0, 0($s1)		#T0 = CADENA[i]
+	beqz	$t0, B25_1		# if (p != PIXEL_VACIO) {
+	
+	move	$a0, $s0		#imagen
+	add	$a1, $s2, $s4		#dst_x + x
+	add	$a2, $s3, $s5		#dst_y + y
+	move	$a3, $t0		#cadena[i]
+	jal	imagen_set_pixel	#imagen_set_pixel(dst, dst_x + x, dst_y + y, p);
+	
+	addi	$s4, $s4, 1		#x++
+	addi	$s1, $s1, 1		#i++
+	j	B25_0
+
+	
+B25_1:	
+	lw	$s5, 24($sp)
+	lw	$s4, 20($sp)
+	lw	$s3, 16($sp)
+	lw	$s2, 12($sp)
+	lw	$s1, 8($sp)
+	lw	$s0, 4($sp)
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 28
+	jr	$ra
+
+
+
+
+
 
 
 	.globl	main
@@ -875,20 +955,21 @@ main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
+
 	la	$a0, str000
-	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opción:\n")
+	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opcion:\n")
 	jal	read_character		# char opc = read_character()
 	beq	$v0, '2', B23_1		# if (opc == '2') salir
 	bne	$v0, '1', B23_5		# if (opc != '1') mostrar error
 	jal	jugar_partida		# jugar_partida()
 	j	B23_2
 B23_1:	la	$a0, str001
-	jal	print_string		# print_string("\n¡Adiós!\n")
+	jal	print_string		# print_string("\n¡Adios!\n")
 	li	$a0, 0
 	jal	mips_exit		# mips_exit(0)
 	j	B23_2
 B23_5:	la	$a0, str002
-	jal	print_string		# print_string("\nOpción incorrecta. Pulse cualquier tecla para seguir.\n")
+	jal	print_string		# print_string("\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n")
 	jal	read_character		# read_character()
 	j	B23_2
 	lw	$ra, 0($sp)
