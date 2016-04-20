@@ -131,7 +131,7 @@ num_punt:
 	.word	0
 
 test:	.asciiz		"\n\n"	
-
+test1:	.asciiz		"159"
 
 	.text	
 	
@@ -475,11 +475,16 @@ actualizar_pantalla:
 	jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
 	
 	
-	#move $a0, $s0			# la	$s0, pantalla
-	#la $a1, test
-	#li $a2, 0
-	#li $a3, 0
-	#jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
+	
+	lw $a0, num_punt
+	la $a1, buffer
+	jal integer_to_string		# ($a0, $a1) = (n, buf)
+	move $a0, $s0			# la	$s0, pantalla
+	#la $a1, test1
+	la $a1, buffer
+	li $a2, 12
+	li $a3, 0
+	jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
 	
 	#######################################################################################################################
         # for (int y = 0; y < campo->alto; ++y) {
@@ -679,6 +684,8 @@ bajar_pieza_actual:			# (void)
 	lw	$t1, 0($t0) 
 	addi	$t1, $t1, 1
 	sw	$t1, 0($t0)
+	
+	
 		
 	
 B14_1:	lw	$ra, 0($sp)
@@ -810,6 +817,12 @@ jugar_partida:
 	sw	$ra, 8($sp)
 	sw	$s1, 4($sp)
 	sw	$s0, 0($sp)
+	
+	#inicializo a 0 el marcador
+	la	$t0, num_punt  
+	li	$t1, 0
+	sw	$t1, 0($t0)
+	
 	la	$a0, pantalla
 	li	$a1, 20
 	li	$a2, 22
