@@ -120,7 +120,8 @@ str001:
 	.asciiz		"\nAdios!\n"
 str002:
 	.asciiz		"\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n"
-
+str_fin:
+	.asciiz		"++++++++++++++++++++\n+------------------+\n+| FIN DE PARTIDA |+\n+| Pulse una tecla|+\n+------------------+\n++++++++++++++++++++"
 
 buffer:	.space 256	#buffer para integer_to_string
 
@@ -146,7 +147,8 @@ imagen_pixel_addr:			# ($a0, $a1, $a2) = (imagen, x, y)
 	addu	$v0, $a0, $t1		# $v0 = $a0 + $a2 * ancho + $a1
 	jr	$ra
 
-	
+
+
 imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)		# guardamos $ra porque haremos un jal
@@ -155,6 +157,7 @@ imagen_get_pixel:			# ($a0, $a1, $a2) = (img, x, y)
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
+
 
 	
 imagen_set_pixel:
@@ -171,6 +174,7 @@ imagen_set_pixel:
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 8
 	jr	$ra
+
 
 
 imagen_clean:
@@ -214,7 +218,8 @@ B3_5:	lw	$s5, 24($sp)
 	addiu	$sp, $sp, 28
 	jr	$ra
 
-        
+
+      
 imagen_init:				# ($a0, $a1, $a2, $a3) = (img, ancho, alto, fondo)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -230,7 +235,8 @@ imagen_init:				# ($a0, $a1, $a2, $a3) = (img, ancho, alto, fondo)
 	addiu	$sp, $sp, 4
 	jr	$ra
 
-	
+
+
 imagen_copy:				# ($a0, $a1) = (dst, src)
 	addi	$sp, $sp, -28
 	sw	$s5, 24($sp)
@@ -283,6 +289,7 @@ B5_3:	lw	$s5, 24($sp)
 	addiu	$sp, $sp, 28
 	jr	$ra
 
+
 	
 imagen_print:				# $a0 = img
 	addiu	$sp, $sp, -24
@@ -323,6 +330,7 @@ B6_5:	lw	$s0, 0($sp)
 	lw	$ra, 20($sp)
 	addiu	$sp, $sp, 24
 	jr	$ra
+
 
 	
 imagen_dibuja_imagen:			# ($a0, $a1, $a2, $a3) = (*dst, *src, dst_x, dst_y)
@@ -379,7 +387,8 @@ B7_5:
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 36
 	jr	$ra
-	
+
+
 
 imagen_dibuja_imagen_rotada:
 	addi	$sp, $sp, -36
@@ -466,18 +475,14 @@ actualizar_pantalla:
 	li	$a1, ' '
 	jal	imagen_clean		# imagen_clean(pantalla, ' ')
 	#######################################################################################################################	
-
-
 	move $a0, $s0			# la	$s0, pantalla
 	la $a1, puntuacion
 	li $a2, 0
 	li $a3, 0
 	jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
 	
-	
-	
-	lw $a0, num_punt
-	la $a1, buffer
+	lw $a0, num_punt		# puntuacion, en inicio = 0
+	la $a1, buffer			# buffer en el que se convierte el integer a string
 	jal integer_to_string		# ($a0, $a1) = (n, buf)
 	move $a0, $s0			# la	$s0, pantalla
 	#la $a1, test1
@@ -485,7 +490,12 @@ actualizar_pantalla:
 	li $a2, 12
 	li $a3, 0
 	jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
-	
+
+	move $a0, $s0			# la	$s0, pantalla
+	la $a1, test			# Imprime el '\n\n'
+	li $a2, 16
+	li $a3, 0
+	jal imagen_dibuja_cadena	# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
 	#######################################################################################################################
         # for (int y = 0; y < campo->alto; ++y) {
 	lw	$t1, 4($s2)		# campo->alto
@@ -542,6 +552,7 @@ B10_6:	la	$s0, pantalla
 	addiu	$sp, $sp, 16
 	jr	$ra
 
+
 	
 nueva_pieza_actual:
 	addiu	$sp, $sp, -4
@@ -563,7 +574,8 @@ nueva_pieza_actual:
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
-	
+
+
 
 probar_pieza:				# ($a0, $a1, $a2) = (pieza, x, y)
 	addiu	$sp, $sp, -32
@@ -630,6 +642,7 @@ B12_13:	lw	$s0, 0($sp)
 	addiu	$sp, $sp, 32
 	jr	$ra
 
+
 	
 intentar_movimiento:			# ($a0, $a1) = (x, y)
 	addiu	$sp, $sp, -12
@@ -659,7 +672,8 @@ B13_1:	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
 
-	
+
+
 bajar_pieza_actual:			# (void)
 	addiu	$sp, $sp, -12
 	sw	$s1, 8($sp)
@@ -685,14 +699,14 @@ bajar_pieza_actual:			# (void)
 	addi	$t1, $t1, 1
 	sw	$t1, 0($t0)
 	
-	
-		
-	
+	jal mips_exit
+
 B14_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
 	lw	$s1, 8($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
+
 
 	
 intentar_rotar_pieza_actual:		#(void)
@@ -732,11 +746,13 @@ B15_1:	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
 
+
 	
 tecla_salir:
 	li	$v0, 1
 	sb	$v0, acabar_partida	# acabar_partida = true
 	jr	$ra
+
 
 	
 tecla_izquierda:
@@ -750,6 +766,7 @@ tecla_izquierda:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+
 	
 tecla_derecha:
 	addiu	$sp, $sp, -4
@@ -762,6 +779,7 @@ tecla_derecha:
 	addiu	$sp, $sp, 4
 	jr	$ra
 
+
 	
 tecla_abajo:
 	addiu	$sp, $sp, -4
@@ -772,6 +790,7 @@ tecla_abajo:
 	jr	$ra
 
 	
+	
 tecla_rotar:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -779,6 +798,7 @@ tecla_rotar:
 	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 4
 	jr	$ra
+
 
 
 procesar_entrada:
@@ -810,6 +830,7 @@ B21_3:	addiu	$s1, $s1, 8		# ++i, $s1 += 8
 	lw	$ra, 16($sp)
 	addiu	$sp, $sp, 20
 	jr	$ra
+
 
 
 jugar_partida:
@@ -857,6 +878,7 @@ B22_5:	lw	$s0, 0($sp)
 	lw	$ra, 8($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
+
 
 
 integer_to_string:			# ($a0, $a1) = (n, buf)
@@ -909,11 +931,6 @@ B24_10:	jr	$ra
 
 
 
-
-
-
-
-
 imagen_dibuja_cadena:			# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, dst_x, dst_y)
 	addi	$sp, $sp, -28
 	sw	$s5, 24($sp)		# int y
@@ -931,7 +948,6 @@ imagen_dibuja_cadena:			# ($a0, $a1, $a2, $a3) = (coord_imagen, coord_cadena, ds
 	li	$s5, 0			# int y
 	li	$s4, 0			# int x
 
-
 B25_0:	lb	$t0, 0($s1)		#T0 = CADENA[i]
 	beqz	$t0, B25_1		# if (p != PIXEL_VACIO) {
 	
@@ -944,7 +960,6 @@ B25_0:	lb	$t0, 0($s1)		#T0 = CADENA[i]
 	addi	$s4, $s4, 1		#x++
 	addi	$s1, $s1, 1		#i++
 	j	B25_0
-
 	
 B25_1:	
 	lw	$s5, 24($sp)
@@ -959,16 +974,11 @@ B25_1:
 
 
 
-
-
-
-
 	.globl	main
 main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
 B23_2:	jal	clear_screen		# clear_screen()
-
 	la	$a0, str000
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opcion:\n")
 	jal	read_character		# char opc = read_character()
