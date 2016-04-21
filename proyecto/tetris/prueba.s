@@ -23,12 +23,11 @@ integer_to_string:			# ($a0, $a1) = (n, buf)
 
 B24_3:  
 	blez	$t1, B24_6		# si i <= 0 salta el bucle
-	#div	$t1, BASE!!!!! NO SE CUAL ES		
 	li	$t7, 10
 	div	$t1, $t7		# i / base
 	mflo	$t1			# i = i / base
 	mfhi	$t2
-	blt	$t2, 10, B24_4		# d = i % base
+	blt	$t2, $t7, B24_4		# d = i % base
 	addiu	$t2, $t2, 'A'
 	addiu	$t2, $t2, -10
 	j	B24_5
