@@ -132,7 +132,6 @@ num_punt:
 	.word	0
 
 test:	.asciiz		"\n\n"	
-test1:	.asciiz		"159"
 
 	.text	
 	
@@ -693,13 +692,20 @@ bajar_pieza_actual:			# (void)
 	move	$a3, $s1
 	jal	imagen_dibuja_imagen
 	jal	nueva_pieza_actual
+	#if llamada a intentar_movimiento
+	move	$a0, $s0
+	lw	$a1, pieza_actual_y #AVERIGUAR VALOR PARA NO TENER QUE CARGAR EN MEMORIA ###################
+	addi	$a1, $a1, 1
+	jal	intentar_movimiento
+	bnez	$v0, B14_2
+	li	$t0, 1
+	sb	$t0, acabar_partida	# acabar_partida = true
+	# acabar_partida=1, y
 	
-	la	$t0, num_punt		# aumentar marcador
+B14_2:	la	$t0, num_punt		# aumentar marcador
 	lw	$t1, 0($t0) 
 	addi	$t1, $t1, 1
 	sw	$t1, 0($t0)
-	
-	jal mips_exit
 
 B14_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)

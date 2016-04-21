@@ -192,6 +192,9 @@ static void bajar_pieza_actual(void) {
   if (!intentar_movimiento(pieza_actual_x, pieza_actual_y + 1)) {
     imagen_dibuja_imagen(campo, pieza_actual, pieza_actual_x, pieza_actual_y);
     nueva_pieza_actual();
+    if (!intentar_movimiento(pieza_actual_x, pieza_actual_y + 1)) {
+       acabar_partida = true;
+    }
   }
 }
 
