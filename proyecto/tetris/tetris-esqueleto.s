@@ -697,7 +697,15 @@ bajar_pieza_actual:			# (void)
 	lw	$a1, pieza_actual_y #AVERIGUAR VALOR PARA NO TENER QUE CARGAR EN MEMORIA ###################
 	addi	$a1, $a1, 1
 	jal	intentar_movimiento
-	bnez	$v0, B14_2
+	bnez	$v0, B14_2		# if(!intentar_movimiento)
+	jal	clear_screen
+	#la	$a0, pantalla
+	la	$a0, str_fin
+	jal	print_string
+	#li	$a2, 0
+	#li	$a3, 5
+	#jal	imagen_dibuja_cadena
+	jal	read_character
 	li	$t0, 1
 	sb	$t0, acabar_partida	# acabar_partida = true
 	# acabar_partida=1, y
@@ -714,7 +722,7 @@ B14_1:	lw	$ra, 0($sp)
 	jr	$ra
 
 
-	
+
 intentar_rotar_pieza_actual:		#(void)
 	addiu	$sp, $sp, -12
 	sw	$s1, 8($sp)
@@ -728,7 +736,7 @@ intentar_rotar_pieza_actual:		#(void)
 	lw	$a1, 4($s1)		# pieza_actual->alto
 	lw	$a2, 0($s1)		# pieza_actual->ancho
 	move	$a3, $zero		# PIXEL_VACIO
-	jal	imagen_init		#imagen_init(pieza_rotada, pieza_actual->alto, pieza_actual->ancho, PIXEL_VACIO);
+	jal	imagen_init		# imagen_init(pieza_rotada, pieza_actual->alto, pieza_actual->ancho, PIXEL_VACIO);
 
 	move	$a0, $s0
 	move	$a1, $s1
@@ -840,11 +848,13 @@ B21_3:	addiu	$s1, $s1, 8		# ++i, $s1 += 8
 
 
 jugar_partida:
-	addiu	$sp, $sp, -12	
+	addiu	$sp, $sp, -16
+	sw	$s2, 12($sp)	
 	sw	$ra, 8($sp)
 	sw	$s1, 4($sp)
 	sw	$s0, 0($sp)
 	
+	li	$s2, 1001		#int pausa = 1000; 	
 	#inicializo a 0 el marcador
 	la	$t0, num_punt  
 	li	$t1, 0
@@ -873,7 +883,7 @@ B22_2:	lbu	$t1, acabar_partida
 	jal	get_time		# get_time()
 	move	$s1, $v0		# Hora ahora = get_time()
 	subu	$t1, $s1, $s0		# int transcurrido = ahora - antes
-	bltu	$t1, 1001, B22_2	# if (transcurrido < pausa + 1) siguiente iteración
+	bltu	$t1, $s2, B22_2	# if (transcurrido < pausa + 1) siguiente iteración
 B22_1:	jal	bajar_pieza_actual	# bajar_pieza_actual()
 	jal	actualizar_pantalla	# actualizar_pantalla()
 	move	$s0, $s1		# antes = ahora
@@ -882,7 +892,8 @@ B22_1:	jal	bajar_pieza_actual	# bajar_pieza_actual()
 B22_5:	lw	$s0, 0($sp)
 	lw	$s1, 4($sp)
 	lw	$ra, 8($sp)
-	addiu	$sp, $sp, 12
+	lw	$s2, 12($sp)
+	addiu	$sp, $sp, 16
 	jr	$ra
 
 
