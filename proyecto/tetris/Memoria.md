@@ -135,5 +135,32 @@ Al probar intentar_movimiento comprobe que ya era totalmeten funcional el tetris
 Al probar intentar_movimiento comprobe que ya era totalmeten funcional el tetris y que podia rotar, mover a derecha e izquierda y baja la pieza, por lo que no me hizo falta revisar esta funcion
 
 
+##Parte 2. Ejercicios de implementación (6 puntos)
+
+
+#### Marcador de puntuación: 
+El principal problema de esta funcion ha sido entender exactamente como habia que implementarlo, ya que no entiendia bien como hacer la función  `imagen_dibuja_cadena`, pensaba que tenia que llamar a la funcion `print_character` en vez de a `imagen_set_pixel`. Una vez coseguido hacer esta funcion correctamente inicializar el marcador y actualizarlo ha sido cosa trivial, tampoco ha sido complejo usar la funcion `integer_to_string`.
+
+
+
+
+
+#### Final de la partida:
+
+
+
+
+
+#### Completando líneas:
+
+
+
+#### Eliminando líneas: 
+
+
+
+#### Ritmo de caída:
+Esta función no es dificil de implementar, solamente hay que hacer que en vez de trabajar con un numero fijo trabajes con una variable global que vas modificando, para hacerlo mas facil he implementado un procedimiento llamado `calcula_tiempo` que sin tener que pasarle nada coje el valor del tiempo calcula el 10% y se lo resta, despues lo actualiza. Ya que asi es mas facil de entender el codigo. Una vez hecho esto lo que hay que hacer es en el contador cada vez que sumas un punto calcular si la puntuacion es multiplo de 50, en caso de que lo sea se llama al procedimiento y aumentamos la velocidad de juego.
+Una cosa que no habiamos pensado y que al repetir el juego varias veces es que en la funcion `jugar_partida`, cuando inicializas el marcador a 0 tambien tienes que inicialalizar el timpo a 1000, ya que sino, el tiempo despues de acabar una partida no se inicializa y mantiene la velocidad de la partida anterior.
 
 
