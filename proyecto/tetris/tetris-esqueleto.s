@@ -131,6 +131,9 @@ puntuacion:
 num_punt:
 	.word	0
 
+tiempo:
+	.word	1001
+
 test:	.asciiz		"\n\n"	
 
 	.text	
@@ -714,6 +717,15 @@ B14_2:	la	$t0, num_punt		# aumentar marcador
 	lw	$t1, 0($t0) 
 	addi	$t1, $t1, 1
 	sw	$t1, 0($t0)
+	
+	#calcular si el marcador es multiplo de 50
+	la	$t0, tiempo	# direccion de tiempo
+	lw	$t1, 0($t0)	#valor de tiempo
+	li	$t2, 50		# multiplp 50
+	divu	$t1, $t2	
+	mfhi	$t0
+	bnez	$t0, B14_1	#if(tiempo != 0)
+	jal	calcula_tiempo
 
 B14_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
@@ -854,11 +866,14 @@ jugar_partida:
 	sw	$s1, 4($sp)
 	sw	$s0, 0($sp)
 	
-	li	$s2, 1001		#int pausa = 1000; 	
 	#inicializo a 0 el marcador
 	la	$t0, num_punt  
 	li	$t1, 0
 	sw	$t1, 0($t0)
+	#inicializamos el tiempo
+	la	$t0, tiempo	# direccion de tiempo
+	li	$t1, 1001		#1001
+	sw	$t1, 0($t0)	#valor de tiempo
 	
 	la	$a0, pantalla
 	li	$a1, 20
@@ -883,7 +898,8 @@ B22_2:	lbu	$t1, acabar_partida
 	jal	get_time		# get_time()
 	move	$s1, $v0		# Hora ahora = get_time()
 	subu	$t1, $s1, $s0		# int transcurrido = ahora - antes
-	bltu	$t1, $s2, B22_2	# if (transcurrido < pausa + 1) siguiente iteración
+	lw	$s2, tiempo		# int pausa = 1000; 
+	bltu	$t1, $s2, B22_2		# if (transcurrido < pausa + 1) siguiente iteración
 B22_1:	jal	bajar_pieza_actual	# bajar_pieza_actual()
 	jal	actualizar_pantalla	# actualizar_pantalla()
 	move	$s0, $s1		# antes = ahora
@@ -989,6 +1005,27 @@ B25_1:
 	addiu	$sp, $sp, 28
 	jr	$ra
 
+
+#Procedimiento para calcular el calcular el aumento del tiempo, solo llamar cada 50 puntos
+calcula_tiempo:			#(tiempo = tiempo - (tiempo*10/100))
+	addiu	$sp, $sp, -4
+	sw	$ra, 0($sp)
+
+	la	$t0, tiempo	# direccion de tiempo
+	li	$t1, 10		#10
+	lw	$t2, 0($t0)	#valor de tiempo
+	# tiempo*10
+	multu	$t2, $t1
+	mflo	$t1
+	# ans/100
+	divu	$t1, $t1, 100
+	# tiempo - ans
+	subu	$t2, $t2, $t1
+	sw	$t2, 0($t0)	# guardamos el valor del tiempo actualizado
+
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
+	jr	$ra
 
 
 	.globl	main
