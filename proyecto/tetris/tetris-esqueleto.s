@@ -693,10 +693,12 @@ bajar_pieza_actual:			# (void)
 	move	$a2, $s0
 	move	$a3, $s1
 	jal	imagen_dibuja_imagen
-	#jal	calcula_completado_lineas
+	
+	jal	calcula_completado_lineas
+	
 	jal	nueva_pieza_actual
 	
-	jal	calcula_fin_partida
+	jal	calcula_fin_partida	# calcula fin de partida y actualiza marcador
 
 B14_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
@@ -838,9 +840,9 @@ jugar_partida:
 	sw	$s0, 0($sp)
 	
 	#inicializo a 0 el marcador
-	la	$t0, num_punt  
+	lw	$t0, num_punt		# aumentar marcador en 1
 	li	$t1, 0
-	sw	$t1, 0($t0)
+	sw	$t0, num_punt
 	#inicializamos el tiempo
 	la	$t0, tiempo	# direccion de tiempo
 	li	$t1, 1001		#1001
@@ -1000,13 +1002,13 @@ calcula_tiempo:			#(tiempo = tiempo - (tiempo*10/100))
 
 calcula_completado_lineas:#hacer que retorne true si hay que eliminar una linea
 #REVISAR SI HAY ALGUNA T QUE SE PUEDA BORRAR POR LLAMAR A ESTA FUNCION
-	addiu	$sp, $sp, -20
+	addiu	$sp, $sp, -24
+	sw	$s4, 20($sp)		#completa = 1;
 	sw	$s3, 16($sp)		# campo->ancho
 	sw	$s2, 12($sp)		# pieza_actual_y + pieza_actual->alto;
 	sw	$s1, 8($sp)		# int x = 0
 	sw	$s0, 4($sp)		# int y = pieza_actual_y
 	sw	$ra, 0($sp)
-
 
 	lw	$s0, pieza_actual_y		# int y = pieza_actual_y
 	la	$t0, pieza_actual
@@ -1014,6 +1016,7 @@ calcula_completado_lineas:#hacer que retorne true si hay que eliminar una linea
 	add	$s2, $s0, $t1		# pieza_actual_y + pieza_actual->alto;
 B26_0:	bge	$s0, $s2, B26_1		#  for (int y = pieza_actual_y; y < pieza_actual_y + pieza_actual->alto; y++) {
 	li	$s1, 0			# int x = 0
+	li	$s4, 1			#completa = 1;
 	la	$t0, pieza_actual
 	lw	$s3, 0($t0)		# campo->ancho
 B26_2:	bge	$s1, $s3, B26_3		# for (int x = 0; x < campo->ancho; x++) {
@@ -1021,20 +1024,24 @@ B26_2:	bge	$s1, $s3, B26_3		# for (int x = 0; x < campo->ancho; x++) {
 	move	$a1, $s1
 	move	$a2, $s0
 	jal	imagen_get_pixel	# int p = imagen_get_pixel(campo, x, y);
-	li	$t7, 1			#completa = 1;
 	beqz	$v0, B26_4		# if (p != PIXEL_VACIO) {
-	li	$t7, 0			# completa = 0;
+	li	$s4, 0			# completa = 0;
+	addi	$s1, $s1, 1		# x++
 	j	B26_5
 B26_4:
 	addi	$s1, $s1, 1		# x++
 	j	B26_2
 
 B26_5:	li	$t0, 1			# 1
-	bne	$t7, $t0, B26_0		# if(completa == 1){
-	la	$t0, num_punt		# aumentar marcador en 10
-	lw	$t1, 0($t0)
+	bne	$s4, $t0, B26_3		# if(completa == 1){
+	
+	#li	$t0, 1
+	#sb	$t0, acabar_partida	# acabar_partida = true
+
+	lw	$t1, num_punt		# aumentar marcador en 10
 	addi	$t1, $t1, 10
-	sw	$t1, 0($t0)
+	sw	$t1, num_punt
+
 
 B26_3:	addi	$s0, $s0, 1		# y++
 	j	B26_0
@@ -1046,9 +1053,11 @@ B26_1:	lw	$ra, 0($sp)
 	lw	$s1, 8($sp)
 	lw	$s2, 12($sp)
 	lw	$s3, 16($sp)
-	addiu	$sp, $sp, 20
+	lw	$s4, 20($sp)
+	addiu	$sp, $sp, 24
 	jr	$ra
-	
+
+
 
 calcula_fin_partida:
 	addiu	$sp, $sp, -4
@@ -1073,10 +1082,9 @@ calcula_fin_partida:
 	sb	$t0, acabar_partida	# acabar_partida = true
 	# acabar_partida=1, y
 	
-B27_0:	la	$t0, num_punt		# aumentar marcador
-	lw	$t1, 0($t0) 
+B27_0:	lw	$t1, num_punt		# aumentar marcador en 1
 	addi	$t1, $t1, 1
-	sw	$t1, 0($t0)
+	sw	$t1, num_punt
 	
 	#calcular si el marcador es multiplo de 50
 	la	$t0, tiempo	# direccion de tiempo
