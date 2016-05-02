@@ -1,10 +1,31 @@
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
+	- [Parte 1. Ejercicios de traducción (4 puntos)](#parte-1-ejercicios-de-traduccin-4-puntos)
+			- [imagen_set_pixel:](#imagensetpixel)
+			- [imagen_clean:](#imagenclean)
+			- [imagen_init:](#imageninit)
+			- [imagen_copy:](#imagencopy)
+			- [imagen_dibuja_imagen:](#imagendibujaimagen)
+			- [imagen_dibuja_imagen_rotada:](#imagendibujaimagenrotada)
+			- [nueva_pieza_actual:](#nuevapiezaactual)
+			- [intentar_movimiento:](#intentarmovimiento)
+			- [intentar_rotar_pieza_actual:](#intentarrotarpiezaactual)
+			- [bajar_pieza_actual:](#bajarpiezaactual)
+	- [Parte 2. Ejercicios de implementación (6 puntos)](#parte-2-ejercicios-de-implementacin-6-puntos)
+			- [Marcador de puntuación:](#marcador-de-puntuacin)
+			- [Final de la partida:](#final-de-la-partida)
+			- [Completando líneas:](#completando-lneas)
+			- [Eliminando líneas:](#eliminando-lneas)
+			- [Ritmo de caída:](#ritmo-de-cada)
+
+<!-- /TOC -->
 
 
 
 
 ##Parte 1. Ejercicios de traducción (4 puntos)
-En general esta primera parte no ha tenido casi dificultad, ya que solo era pasar codigo de C a mips. 
+
+En general esta primera parte no ha tenido casi dificultad, ya que solo era pasar codigo de C a mips.
 La parte mas problematica ha sido la de hacer las llamadas a las funciones de forma correcta para asegurarse de que estaban correctamente implementadas.
 
 La forma de realizar la practica ha sido: primero hemos ido portando todo el codigo a mips, una vez que se porto todo el codigo se fue comprobando cada funcion que estaba correctamente hecha y corrigiendo las pequeñas erratas que pudiesen tener.
@@ -123,7 +144,7 @@ jal imagen_print
 #### intentar_movimiento:
 En esta tuve que corregir el mismo fallo que en `nueva_pieza_actual` por usar `lw pieza_actual_x`
 
-A partir de aqui ya no tuve que implemetar yo codigo para llamar a la funcion, ya el tetris puede funcionar con el codigo del main 
+A partir de aqui ya no tuve que implemetar yo codigo para llamar a la funcion, ya el tetris puede funcionar con el codigo del main
 
 
 
@@ -138,7 +159,7 @@ Al probar intentar_movimiento comprobe que ya era totalmeten funcional el tetris
 ##Parte 2. Ejercicios de implementación (6 puntos)
 
 
-#### Marcador de puntuación: 
+#### Marcador de puntuación:
 El principal problema de esta funcion ha sido entender exactamente como habia que implementarlo, ya que no entiendia bien como hacer la función  `imagen_dibuja_cadena`, pensaba que tenia que llamar a la funcion `print_character` en vez de a `imagen_set_pixel`. Una vez coseguido hacer esta funcion correctamente inicializar el marcador y actualizarlo ha sido cosa trivial, tampoco ha sido complejo usar la funcion `integer_to_string`.
 
 
@@ -146,21 +167,22 @@ El principal problema de esta funcion ha sido entender exactamente como habia qu
 
 
 #### Final de la partida:
+Esta implementacion ha sido facil de implementer, solo hay que poner un `if` en la funcion `bajar_pieza_actual` para comprobar si puedes volver hacer un movimiento con la pieza_actual.
+El unico problema que hemos tenido es que al generar una nueva pieza, se genera en la misma coordenada `y` de donde se puso la anterior, y si esa posicion `y` estaba en un lateral el programa podia detectar que no podia bajar la ficha y llamaba a `acabar_partida`
 
-
-
-
+```
+move	$a0, $s0			#Mal
+lw	$a0, pieza_actual_x		#Bien
+```
 
 #### Completando líneas:
 
 
 
-#### Eliminando líneas: 
+#### Eliminando líneas:
 
 
 
 #### Ritmo de caída:
 Esta función no es dificil de implementar, solamente hay que hacer que en vez de trabajar con un numero fijo trabajes con una variable global que vas modificando, para hacerlo mas facil he implementado un procedimiento llamado `calcula_tiempo` que sin tener que pasarle nada coje el valor del tiempo calcula el 10% y se lo resta, despues lo actualiza. Ya que asi es mas facil de entender el codigo. Una vez hecho esto lo que hay que hacer es en el contador cada vez que sumas un punto calcular si la puntuacion es multiplo de 50, en caso de que lo sea se llama al procedimiento y aumentamos la velocidad de juego.
 Una cosa que no habiamos pensado y que al repetir el juego varias veces es que en la funcion `jugar_partida`, cuando inicializas el marcador a 0 tambien tienes que inicialalizar el timpo a 1000, ya que sino, el tiempo despues de acabar una partida no se inicializa y mantiene la velocidad de la partida anterior.
-
-

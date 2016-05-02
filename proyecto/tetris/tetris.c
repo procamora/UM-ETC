@@ -10,8 +10,8 @@
 
 typedef unsigned char Pixel;
 #define PIXEL_VACIO ((Pixel) 0)
-typedef struct { 
-  unsigned int ancho; 
+typedef struct {
+  unsigned int ancho;
   unsigned int alto;
   Pixel data[IMAGEN_MAX_SIZE];
 } Imagen;
@@ -36,7 +36,7 @@ static void imagen_clean(Imagen *img, Pixel fondo) {
       imagen_set_pixel(img, x, y, fondo);
     }
   }
-} 
+}
 
 static void imagen_init(Imagen *img, int ancho, int alto, Pixel fondo) {
   img->ancho = ancho;
@@ -88,29 +88,29 @@ static void imagen_dibuja_imagen_rotada(Imagen *dst, Imagen *src, int dst_x, int
 }
 
 
-static Imagen pieza_jota = { 2, 3, 
+static Imagen pieza_jota = { 2, 3,
                              { 0,   '*',
                                0,   '*',
                                '*', '*' } };
-static Imagen pieza_ele = { 2, 3, 
+static Imagen pieza_ele = { 2, 3,
                             { '*', 0,
                               '*', 0,
                               '*', '*' } };
-static Imagen pieza_barra = { 1, 4, 
+static Imagen pieza_barra = { 1, 4,
                               { '*',
                                 '*',
                                 '*',
                                 '*' } };
-static Imagen pieza_zeta = { 3, 2, 
+static Imagen pieza_zeta = { 3, 2,
                              { '*', '*', 0,
                                0,   '*', '*' } };
-static Imagen pieza_ese = { 3, 2, 
+static Imagen pieza_ese = { 3, 2,
                             { 0,   '*', '*',
                               '*', '*', 0 } };
-static Imagen pieza_cuadro = { 2, 2, 
+static Imagen pieza_cuadro = { 2, 2,
                                { '*', '*',
                                  '*', '*' } };
-static Imagen pieza_te = { 3, 2, 
+static Imagen pieza_te = { 3, 2,
                            { 0,   '*', 0,
                              '*', '*', '*' } };
 static Imagen *piezas[] = { &pieza_jota, &pieza_ele, &pieza_zeta, &pieza_ese, &pieza_barra, &pieza_cuadro, &pieza_te };
@@ -144,7 +144,7 @@ static void actualizar_pantalla(void) {
   for (int y = 0; y < campo->alto; ++y) {
     imagen_set_pixel(pantalla, pos_campo_x - 1, y + pos_campo_y, '|');
     imagen_set_pixel(pantalla, pos_campo_x + campo->ancho, y + pos_campo_y, '|');
-  }  
+  }
   for (int x = 0; x < campo->ancho + 2; ++x) {
     imagen_set_pixel(pantalla, pos_campo_x - 1 + x, pos_campo_y + campo->alto, '-');
   }
@@ -191,6 +191,24 @@ static bool intentar_movimiento(int x, int y) {
 static void bajar_pieza_actual(void) {
   if (!intentar_movimiento(pieza_actual_x, pieza_actual_y + 1)) {
     imagen_dibuja_imagen(campo, pieza_actual, pieza_actual_x, pieza_actual_y);
+
+    /*   ********************   */
+    int completa;
+    for (int y = pieza_actual_y; y < pieza_actual_y + pieza_actual->alto; y++) {
+            completa = 1;
+            for (int x = 0; x < campo->ancho; x++) {
+                    int p = imagen_get_pixel(campo, x, y);
+                    if(p==PIXEL_VACIO){
+                            completa = 0;
+                            break;
+                    }
+            }
+            if(completa == 1){
+                    //Marcador + 10
+                    acabar_partida = true;
+            }
+     /*   ********************   */
+    }
     nueva_pieza_actual();
     if (!intentar_movimiento(pieza_actual_x, pieza_actual_y + 1)) {
        acabar_partida = true;
@@ -250,7 +268,7 @@ static void jugar_partida(void) {
   nueva_pieza_actual();
   acabar_partida = false;
 
-  int pausa = 1000; 
+  int pausa = 1000;
   Hora antes = get_time();
   actualizar_pantalla();
   while (!acabar_partida) {
