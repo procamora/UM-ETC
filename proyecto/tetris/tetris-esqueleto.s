@@ -96,9 +96,6 @@ piezas:
 acabar_partida:
 	.byte	0
 
-imprimir_mensaje:
-	.byte	0
-
 	.align	2
 procesar_entrada.opciones:
 	.byte	'x'
@@ -123,13 +120,17 @@ str001:
 	.asciiz		"\nAdios!\n"
 str002:
 	.asciiz		"\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n"
-str_fin:
-	.asciiz		"++++++++++++++++++++\n+------------------+\n+| FIN DE PARTIDA |+\n+| Pulse una tecla|+\n+------------------+\n++++++++++++++++++++"
 
 pieza_fin:
 	.word	19
 	.word	4
-	.ascii		"+-----------------++\0FIN DE PARTIDA\0\0++\0Pulse una tecla\0++-----------------+"
+	.ascii		"+-----------------++ FIN DE PARTIDA  ++ Pulse una tecla ++-----------------+"
+
+pieza_salir:
+	.word	19
+	.word	4
+	.ascii "+-----------------++     GAME OVER   ++ Pulse una tecla ++-----------------+"
+
 
 buffer:	.space 256	#buffer para integer_to_string
 
@@ -484,12 +485,9 @@ actualizar_pantalla:
 	move	$a0, $s0
 	li	$a1, ' '
 	jal	imagen_clean		# imagen_clean(pantalla, ' ')
-	#######################################################################################################################
+
 	jal	calcula_marcador
 
-
-
-	#######################################################################################################################
         # for (int y = 0; y < campo->alto; ++y) {
 	lw	$t1, 4($s2)		# campo->alto
 	beqz	$t1, B10_3		# sale del bucle si campo->alto == 0
@@ -538,10 +536,7 @@ B10_6:	la	$s0, pantalla
 	jal	clear_screen		# clear_screen()
 	move	$a0, $s0
 	jal	imagen_print		# imagen_print(pantalla)
-	lb	$t0, imprimir_mensaje
-	beqz	$t0, B10_7
-	jal	fin_partida
-B10_7:	lw	$s0, 0($sp)
+	lw	$s0, 0($sp)
 	lw	$s1, 4($sp)
 	lw	$s2, 8($sp)
 	lw	$ra, 12($sp)
@@ -739,11 +734,31 @@ B15_1:	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
 
-
+tecla_salir2:
+li	$t0, 1
+sb	$t0, acabar_partida	# acabar_partida = true
+jr	$ra
 
 tecla_salir:
-	li	$v0, 1
-	sb	$v0, acabar_partida	# acabar_partida = true
+	addiu	$sp, $sp, -4
+	sw	$ra, 0($sp)
+
+	la	$a0, pantalla
+	la	$a1, pieza_salir
+	li	$a2, 0
+	li	$a3, 9
+	jal	imagen_dibuja_imagen
+	jal	clear_screen		# clear_screen()
+	la	$a0, pantalla
+	jal	imagen_print		# imagen_print(pantalla)
+
+	jal	read_character
+
+	li	$t0, 1
+	sb	$t0, acabar_partida	# acabar_partida = true
+
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
 	jr	$ra
 
 
@@ -1095,7 +1110,7 @@ fin_partida:
 	la	$a0, pantalla
 	la	$a1, pieza_fin
 	li	$a2, 0
-	li	$a3, 5
+	li	$a3, 9
 	jal	imagen_dibuja_imagen
 	jal	clear_screen		# clear_screen()
 	la	$a0, pantalla
@@ -1128,8 +1143,8 @@ calcula_fin_partida:
 
 
 	bnez	$v0, B27_0		# if(!intentar_movimiento)
-	li	$t0, 1
-	sb	$t0, imprimir_mensaje	# acabar_partida = true
+	jal	fin_partida
+
 
 B27_0:	lw	$t1, num_punt		# aumentar marcador en 1
 	addi	$t1, $t1, 1
