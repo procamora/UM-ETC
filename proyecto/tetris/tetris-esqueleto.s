@@ -734,10 +734,7 @@ B15_1:	lw	$ra, 0($sp)
 	addiu	$sp, $sp, 12
 	jr	$ra
 
-tecla_salir2:
-li	$t0, 1
-sb	$t0, acabar_partida	# acabar_partida = true
-jr	$ra
+
 
 tecla_salir:
 	addiu	$sp, $sp, -4
@@ -988,6 +985,7 @@ B25_1:
 	jr	$ra
 
 
+
 calcula_marcador:
 	addi	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -1134,17 +1132,12 @@ calcula_fin_partida:
 
 	#if llamada a intentar_movimiento
 	lw	$a0, pieza_actual_x
-	lw	$a1, pieza_actual_y #AVERIGUAR VALOR PARA NO TENER QUE CARGAR EN MEMORIA ###################
+	lw	$a1, pieza_actual_y
 	addi	$a1, $a1, 1
 	jal	intentar_movimiento	# ($a0, $a1) = (x, y)
 
-
-	#li 	$v0, 0			# BORAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 	bnez	$v0, B27_0		# if(!intentar_movimiento)
 	jal	fin_partida
-
 
 B27_0:	lw	$t1, num_punt		# aumentar marcador en 1
 	addi	$t1, $t1, 1
