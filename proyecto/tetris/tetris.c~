@@ -188,19 +188,21 @@ static bool intentar_movimiento(int x, int y) {
   }
   return false;
 }
+static void elimina_linea(void) {
+}
 
 static void comprueba_lineas(void) {
     int completa;
     for (int y = pieza_actual_y; y < pieza_actual_y + pieza_actual->alto; ++y) {
-            completa = 1;
+            completa = 0;
             for (int x = 0; x < campo->ancho; ++x) {
                     int p = imagen_get_pixel(campo, x, y);
                     if(p==PIXEL_VACIO){
-                            completa = 0;
+                            completa = 1;
                             break;
                     }
             }
-            if(completa == 1){
+            if(completa == 0){
                     //Marcador + 10
                     acabar_partida = true;
             }

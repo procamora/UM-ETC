@@ -188,6 +188,8 @@ static bool intentar_movimiento(int x, int y) {
   }
   return false;
 }
+static void elimina_linea(void) {
+}
 
 static void comprueba_lineas(void) {
     int completa;
@@ -202,7 +204,7 @@ static void comprueba_lineas(void) {
             }
             if(completa == 0){
                     //Marcador + 10
-                    acabar_partida = true;
+                    elimina_linea();
             }
     }
 }

@@ -1041,6 +1041,28 @@ calcula_tiempo:			#(tiempo = tiempo - (tiempo*10/100))
 	jr	$ra
 
 
+elimina_linea:
+	addiu	$sp, $sp, -24
+	sw	$s4, 20($sp)		#
+	sw	$s3, 16($sp)		# 
+	sw	$s2, 12($sp)		# 
+	sw	$s1, 8($sp)		#
+	sw	$s0, 4($sp)		# 
+	sw	$ra, 0($sp)
+	
+	
+	
+	
+	lw	$ra, 0($sp)
+	lw	$s0, 4($sp)
+	lw	$s1, 8($sp)
+	lw	$s2, 12($sp)
+	lw	$s3, 16($sp)
+	lw	$s4, 20($sp)
+	addiu	$sp, $sp, 24
+	jr	$ra
+	
+	
 
 calcula_completado_lineas:#hacer que retorne true si hay que eliminar una linea
 #REVISAR SI HAY ALGUNA T QUE SE PUEDA BORRAR POR LLAMAR A ESTA FUNCION
@@ -1061,7 +1083,7 @@ B26_0:	bge	$s0, $s2, B26_1		#  for (int y = pieza_actual_y; y < pieza_actual_y +
 	li	$s4, 0			#completa = 0
 	la	$t0, campo
 	lw	$s3, 0($t0)		# campo->ancho
-	##################
+
 B26_2:	bge	$s1, $s3, B26_5		# for (int x = 0; x < campo->ancho; x++) {
 	la	$a0, campo
 	move	$a1, $s1
@@ -1074,11 +1096,12 @@ B26_2:	bge	$s1, $s3, B26_5		# for (int x = 0; x < campo->ancho; x++) {
 B26_4:
 	addi	$s1, $s1, 1		# x++
 	j	B26_2
-	###################
+
 B26_5:	bnez	$s4, B26_3		# if(completa != 0){
 	lw	$t1, num_punt		# aumentar marcador en 10
 	addi	$t1, $t1, 10
 	sw	$t1, num_punt
+	jal	elimina_linea
 
 B26_3:	addi	$s0, $s0, 1		# y++
 	j	B26_0
