@@ -1059,7 +1059,7 @@ calcula_completado_lineas:#hacer que retorne true si hay que eliminar una linea
 B26_0:	bge	$s0, $s2, B26_1		#  for (int y = pieza_actual_y; y < pieza_actual_y + pieza_actual->alto; y++) {
 	li	$s1, 0			# int x = 0
 	li	$s4, 0			#completa = 0
-	la	$t0, pieza_actual
+	la	$t0, campo
 	lw	$s3, 0($t0)		# campo->ancho
 	##################
 B26_2:	bge	$s1, $s3, B26_5		# for (int x = 0; x < campo->ancho; x++) {
@@ -1082,6 +1082,7 @@ B26_5:	bnez	$s4, B26_3		# if(completa != 0){
 
 B26_3:	addi	$s0, $s0, 1		# y++
 	j	B26_0
+
 B26_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
 	lw	$s1, 8($sp)
