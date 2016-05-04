@@ -683,7 +683,7 @@ bajar_pieza_actual:			# (void)
 	move	$a3, $s1
 	jal	imagen_dibuja_imagen
 
-	#jal	calcula_completado_lineas
+	jal	calcula_completado_lineas
 
 	jal	nueva_pieza_actual
 
@@ -1058,7 +1058,7 @@ calcula_completado_lineas:#hacer que retorne true si hay que eliminar una linea
 	add	$s2, $s0, $t1		# pieza_actual_y + pieza_actual->alto;
 B26_0:	bge	$s0, $s2, B26_1		#  for (int y = pieza_actual_y; y < pieza_actual_y + pieza_actual->alto; y++) {
 	li	$s1, 0			# int x = 0
-	li	$s4, 1			#completa = 1;
+	li	$s4, 0			#completa = 0
 	la	$t0, pieza_actual
 	lw	$s3, 0($t0)		# campo->ancho
 	##################
@@ -1068,15 +1068,14 @@ B26_2:	bge	$s1, $s3, B26_5		# for (int x = 0; x < campo->ancho; x++) {
 	move	$a2, $s0
 	jal	imagen_get_pixel	# int p = imagen_get_pixel(campo, x, y);
 	bnez	$v0, B26_4		# if (p!= PIXEL_VACIO) {
-	li	$s4, 0			# completa = 0;
+	li	$s4, 1
 	addi	$s1, $s1, 1		# x++
 	j	B26_5			#break
 B26_4:
 	addi	$s1, $s1, 1		# x++
 	j	B26_2
 	###################
-B26_5:	li	$t0, 1			# 1
-	bne	$s4, $t0, B26_3		# if(completa != 1){
+B26_5:	bnez	$s4, B26_3		# if(completa != 0){
 	lw	$t1, num_punt		# aumentar marcador en 10
 	addi	$t1, $t1, 10
 	sw	$t1, num_punt
