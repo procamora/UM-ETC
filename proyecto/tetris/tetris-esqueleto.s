@@ -683,7 +683,7 @@ bajar_pieza_actual:			# (void)
 	move	$a3, $s1
 	jal	imagen_dibuja_imagen
 
-	jal	calcula_completado_lineas
+	#jal	calcula_completado_lineas
 
 	jal	nueva_pieza_actual
 
@@ -846,9 +846,9 @@ jugar_partida:
 	sw	$s0, 0($sp)
 
 	#inicializo a 0 el marcador
-	lw	$t0, num_punt		# aumentar marcador en 1
+	lw	$t0, num_punt		# inicializa el marcador
 	li	$t1, 0
-	sw	$t0, num_punt
+	sw	$t1, num_punt
 	#inicializamos el tiempo
 	la	$t0, tiempo	# direccion de tiempo
 	li	$t1, 1001		#1001
@@ -1061,35 +1061,28 @@ B26_0:	bge	$s0, $s2, B26_1		#  for (int y = pieza_actual_y; y < pieza_actual_y +
 	li	$s4, 1			#completa = 1;
 	la	$t0, pieza_actual
 	lw	$s3, 0($t0)		# campo->ancho
-B26_2:	bge	$s1, $s3, B26_3		# for (int x = 0; x < campo->ancho; x++) {
+	##################
+B26_2:	bge	$s1, $s3, B26_5		# for (int x = 0; x < campo->ancho; x++) {
 	la	$a0, campo
 	move	$a1, $s1
 	move	$a2, $s0
 	jal	imagen_get_pixel	# int p = imagen_get_pixel(campo, x, y);
-	beqz	$v0, B26_4		# if (p != PIXEL_VACIO) {
+	bnez	$v0, B26_4		# if (p!= PIXEL_VACIO) {
 	li	$s4, 0			# completa = 0;
 	addi	$s1, $s1, 1		# x++
-	j	B26_5
+	j	B26_5			#break
 B26_4:
 	addi	$s1, $s1, 1		# x++
 	j	B26_2
-
+	###################
 B26_5:	li	$t0, 1			# 1
-	bne	$s4, $t0, B26_3		# if(completa == 1){
-
-	#li	$t0, 1
-	#sb	$t0, acabar_partida	# acabar_partida = true
-
+	bne	$s4, $t0, B26_3		# if(completa != 1){
 	lw	$t1, num_punt		# aumentar marcador en 10
 	addi	$t1, $t1, 10
 	sw	$t1, num_punt
 
-
 B26_3:	addi	$s0, $s0, 1		# y++
 	j	B26_0
-
-
-
 B26_1:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
 	lw	$s1, 8($sp)
