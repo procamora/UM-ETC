@@ -188,7 +188,14 @@ static bool intentar_movimiento(int x, int y) {
   }
   return false;
 }
-static void elimina_linea(void) {
+static void elimina_linea(int linea_y) {
+        for (int y = linea_y; y < campo->alto; ++y) {
+                for (int x = 0; x < campo->ancho; ++x) {
+                        int p = imagen_get_pixel(campo, x, y-1);
+                        imagen_set_pixel(campo, x, y, p);
+                }
+        }
+
 }
 
 static void comprueba_lineas(void) {
@@ -204,7 +211,7 @@ static void comprueba_lineas(void) {
             }
             if(completa == 0){
                     //Marcador + 10
-                    elimina_linea();
+                    elimina_linea(y);
             }
     }
 }
