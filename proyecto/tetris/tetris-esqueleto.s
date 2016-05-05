@@ -1044,16 +1044,13 @@ calcula_tiempo:			#(tiempo = tiempo - (tiempo*10/100))
 elimina_linea:
 	addiu	$sp, $sp, -20
 	sw	$s3, 16($sp)		#
-	sw	$s2, 12($sp)		#
+	sw	$s2, 12($sp)		#BORRAR
 	sw	$s1, 8($sp)		#
 	sw	$s0, 4($sp)		#
 	sw	$ra, 0($sp)
 
 	move	$s0, $a0		# int y = linea_y
-	la	$t0, campo
-	lw	$s2, 4($t0)		# campo->alto
-
-B28_0:	bge	$s0, $s2, B28_1		# for (int y = linea_y; y < campo->alto; ++y) {
+B28_0:	bltz	$s0,  B28_1		# for (int y = linea_y; y < campo->alto; ++y) {
 	li	$s1, 0			# int x = 0
 	la	$t0, campo
 	lw	$s3, 0($t0)		# campo->ancho
@@ -1074,11 +1071,25 @@ B28_2:	bge	$s1, $s3, B28_3		# for (int x = 0; x < campo->ancho; ++x) {
 	j	B28_2
 
 
-B28_3:	addi	$s0, $s0, 1		# y++
+B28_3:	addi	$s0, $s0, -1		# y++
 	j	B28_0
 
-B28_1:
-	lw	$ra, 0($sp)
+B28_1:	
+	li	$s1, 0			# int x = 0
+	la	$t0, campo
+	lw	$s3, 0($t0)		# campo->ancho
+ B28_5:	bge	$s1, $s3, B28_4	# for (int x = 0; x < campo->ancho; ++x) {
+	la	$a0, campo
+	move	$a1, $s1		# x
+	li	$a2, 0			# y
+	li	$a3, '\0'			# p
+	jal 	imagen_set_pixel	# imagen_set_pixel(campo, x, y, p);
+
+	addi	$s1, $s1, 1		# x++
+	j	B28_5
+
+
+B28_4:	lw	$ra, 0($sp)
 	lw	$s0, 4($sp)
 	lw	$s1, 8($sp)
 	lw	$s2, 12($sp)
