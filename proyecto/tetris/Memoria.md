@@ -177,3 +177,5 @@ Para poder comparar que los valores del `campo` no sean nunca superiores a los d
 Las funciones que modifican los valores son similares todas, limpian la pantalla, piden el valor a actualizar, comprueban que es valido tanto al alza como a la baja y en caso de que sea valido lo guardan.
 
 Tambien ha habido que modificar el valor de `pieza_actual_x` para que sea `campo_x div 2`, ya que sino no sale centrada cuando cambias el valor del campo
+
+Para la modificación de de las teclas solo ha habido que saber en que posicion estaban guardadas del diccionario `procesar_entrada.opciones`, y una vez localizadas las posiciones son `sb` introducir las nuevas teclas.
