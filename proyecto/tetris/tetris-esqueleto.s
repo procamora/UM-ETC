@@ -1,3 +1,4 @@
+
 # Version incompleta del tetris
 # Sincronizada con tetris.s:r2563
 
@@ -140,13 +141,21 @@ pantalla_y:	.word 22
 str_newline:		.asciiz "\n"
 str_error:	.asciiz	"Valor incorrecto\n"
 
-str_tam_campo_x:	.asciiz	"Introduzca la x el tamaño del campo:  "
-str_tam_campo_y:	.asciiz	"Introduzca la y el tamaño del campo:  "
+str_tam_campo_x:	.asciiz	"Introduzca la x el tamaño del campo: "
+str_tam_campo_y:	.asciiz	"Introduzca la y el tamaño del campo: "
 str_vel_inicial:	.asciiz	"Introduzca la velocidad inicial: "
+str_tecla_salir:	.asciiz	"Introduzca la tecla salir: "
+str_tecla_abajo:	.asciiz	"Introduzca la tecla abajo: "
+str_tecla_derecha:	.asciiz	"Introduzca la tecla derecha : "
+str_tecla_izquierda:	.asciiz	"Introduzca la tecla izquierda: "
 
 info_tam_campo_x: 	.asciiz "El valor del campo en x es: "
 info_tam_campo_y: 	.asciiz "El valor del campo en y es: "
 info_vel_inicial: 	.asciiz "El valor de la velocidad es: "
+info_tecla_salir:	.asciiz	"El valor de la tecla salir es: "
+info_tecla_abajo:	.asciiz	"El valor de la tecla abajo es: "
+info_tecla_derecha:	.asciiz	"El valor de la tecla derecha es: "
+info_tecla_izquierda:	.asciiz	"El valor de la tecla izquierda es: "
 
 str_opcion_conf:
 	.asciiz		"Editar:\n\n 1 - Campo\n 2 - Velocidad\n 3 - Volver\n\nElige una opcion:\n"
@@ -161,6 +170,11 @@ num_punt:
 
 tiempo:
 	.word	1001
+tiempo_inicial:			#  tiempo inicial, cuando lo modificamos, modificamos solo este valor
+	.word	1001
+
+
+
 
 test:	.asciiz		"\n\n"
 
@@ -571,10 +585,14 @@ nueva_pieza_actual:
 	jal	pieza_aleatoria		# Imagen *elegida = pieza_aleatoria();
 	la	$a0, pieza_actual
 	move	$a1, $v0
-	la	$a1, pieza_barra	#BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+	#la	$a1, pieza_barra	#BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 	jal	imagen_copy
 	la	$t0, pieza_actual_x	# pieza_actual_x = 8;
-	li	$t1, 8
+	lw	$t2, campo_x
+	li 	$t3, 2
+	div	$t2, $t3
+	mflo	$t1
+	#li	$t1, 8
 	sw	$t1, 0($t0)
 
 	la	$t0, pieza_actual_y	# pieza_actual_y = 0;
@@ -762,7 +780,11 @@ tecla_salir:
 	la	$a0, pantalla
 	la	$a1, pieza_salir
 	li	$a2, 0
-	li	$a3, 9
+	#li	$a3, 9
+	lw	$t2, campo_y
+	li 	$t3, 2
+	div	$t2, $t3
+	mflo	$a3		#Mitad campo
 	jal	imagen_dibuja_imagen
 	jal	clear_screen		# clear_screen()
 	la	$a0, pantalla
@@ -869,9 +891,8 @@ jugar_partida:
 	li	$t1, 0
 	sw	$t1, num_punt
 	#inicializamos el tiempo
-	la	$t0, tiempo	# direccion de tiempo
-	li	$t1, 1001		#1001
-	sw	$t1, 0($t0)	#valor de tiempo
+	lw 	$t1, tiempo_inicial	# tiempo que cambia en configuracion
+	sw	$t1, tiempo		#valor de tiempo
 
 	la	$a0, pantalla
 	lw	$a1, pantalla_x
@@ -1179,7 +1200,11 @@ fin_partida:
 	la	$a0, pantalla
 	la	$a1, pieza_fin
 	li	$a2, 0
-	li	$a3, 9
+	#li	$a3, 9
+	lw	$t2, campo_y
+	li 	$t3, 2
+	div	$t2, $t3
+	mflo	$a3		#Mitad campo
 	jal	imagen_dibuja_imagen
 	jal	clear_screen		# clear_screen()
 	la	$a0, pantalla
@@ -1208,6 +1233,18 @@ calcula_fin_partida:
 	jal	intentar_movimiento	# ($a0, $a1) = (x, y)
 
 	bnez	$v0, B27_0		# if(!intentar_movimiento)
+	########################################
+	la	$a0, pantalla
+	la	$a1, pieza_actual
+	lw	$a2, pieza_actual_x
+	addi	$a2, $a2, 1
+	lw	$a3, pieza_actual_y
+	addi	$a3, $a3, 1
+	jal	imagen_dibuja_imagen
+	jal	clear_screen		# clear_screen()
+	la	$a0, pantalla
+	jal	imagen_print		# imagen_print(pantalla)
+	########################################
 	jal	fin_partida
 
 B27_0:	lw	$t1, num_punt		# aumentar marcador en 1
@@ -1250,7 +1287,7 @@ info_actual:
 
 	la 	$a0, info_vel_inicial
 	jal 	print_string
-	lw 	$a0, tiempo
+	lw 	$a0, tiempo_inicial
 	jal 	print_integer
 	la 	$a0, str_newline
 	jal 	print_string
@@ -1314,7 +1351,7 @@ B32_0:	la 	$a0, str_vel_inicial		#
 	bge 	$v0, $t0, B32_0_1		# if(valor>10 and valor < 5000)
 	li 	$t0, 10				# tam minimo para jugar
 	ble 	$v0, $t0, B32_0_1
-	sw 	$v0, tiempo
+	sw 	$v0, tiempo_inicial
 	j 	B32_1
 B32_0_1:
 	la 	$a0, str_error

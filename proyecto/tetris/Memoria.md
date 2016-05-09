@@ -175,3 +175,5 @@ Para implementar esta función lo primero ha sido añadir a las librerías del s
 Después hemos añadido al menú la opción de llamar a la función para editar la configuración, esta funciona es un `do .. while` que mostrara un menú similar al del tetris que se usara para llamar a las funciones encargadas de editar las diferentes opciones.
 Para poder comparar que los valores del `campo` no sean nunca superiores a los de `pantalla` los hemos puesto globales.
 Las funciones que modifican los valores son similares todas, limpian la pantalla, piden el valor a actualizar, comprueban que es valido tanto al alza como a la baja y en caso de que sea valido lo guardan.
+
+Tambien ha habido que modificar el valor de `pieza_actual_x` para que sea `campo_x div 2`, ya que sino no sale centrada cuando cambias el valor del campo
