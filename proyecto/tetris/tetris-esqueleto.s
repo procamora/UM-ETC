@@ -148,6 +148,7 @@ str_tecla_salir:	.asciiz	"Introduzca la tecla salir: "
 str_tecla_abajo:	.asciiz	"Introduzca la tecla abajo: "
 str_tecla_derecha:	.asciiz	"Introduzca la tecla derecha : "
 str_tecla_izquierda:	.asciiz	"Introduzca la tecla izquierda: "
+str_tecla_rotar:	.asciiz	"Introduzca la tecla rotar: "
 
 info_tam_campo_x: 	.asciiz "El valor del campo en x es: "
 info_tam_campo_y: 	.asciiz "El valor del campo en y es: "
@@ -156,9 +157,10 @@ info_tecla_salir:	.asciiz	"El valor de la tecla salir es: "
 info_tecla_abajo:	.asciiz	"El valor de la tecla abajo es: "
 info_tecla_derecha:	.asciiz	"El valor de la tecla derecha es: "
 info_tecla_izquierda:	.asciiz	"El valor de la tecla izquierda es: "
+info_tecla_rotar:	.asciiz	"El valor de la tecla rotar es: "
 
 str_opcion_conf:
-	.asciiz		"Editar:\n\n 1 - Campo\n 2 - Velocidad\n 3 - Volver\n\nElige una opcion:\n"
+	.asciiz		"Editar:\n\n 1 - Campo\n 2 - Velocidad\n 3 - Teclas\n 4 - Volver\n\nElige una opcion:\n"
 
 buffer:	.space 256	#buffer para integer_to_string
 
@@ -1267,7 +1269,8 @@ B27_1:	lw	$ra, 0($sp)
 
 
 info_actual:
-	addiu	$sp, $sp, -4
+	addiu	$sp, $sp, -8
+	sw	$s0, 4($sp)
 	sw	$ra, 0($sp)
 
 	jal 	clear_screen
@@ -1292,8 +1295,45 @@ info_actual:
 	la 	$a0, str_newline
 	jal 	print_string
 
+	la 	$s0, procesar_entrada.opciones
+	la 	$a0, info_tecla_salir
+	jal 	print_string
+	lb 	$a0, 0($s0)
+	jal 	print_character
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, info_tecla_izquierda
+	jal 	print_string
+	lb 	$a0, 8($s0)
+	jal 	print_character
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, info_tecla_derecha
+	jal 	print_string
+	lb 	$a0, 16($s0)
+	jal 	print_character
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, info_tecla_abajo
+	jal 	print_string
+	lb 	$a0, 24($s0)
+	jal 	print_character
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, info_tecla_rotar
+	jal 	print_string
+	lb 	$a0, 32($s0)
+	jal 	print_character
+	la 	$a0, str_newline
+	jal 	print_string
+
 	lw	$ra, 0($sp)
-	addiu	$sp, $sp, 4
+	lw	$s0, 4($sp)
+	addiu	$sp, $sp, 8
 	jr	$ra
 
 
@@ -1338,6 +1378,8 @@ B30_3:	lw	$s0, 0($sp)
 	addiu	$sp, $sp, 8
 	jr	$ra
 
+
+
 calcula_cambio_velocidad:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -1364,6 +1406,54 @@ B32_1:	lw	$ra, 0($sp)
 
 
 
+calcula_teclas:
+	addiu	$sp, $sp, -8
+	sw	$s0, 4($sp)
+	sw	$ra, 0($sp)
+
+	jal 	clear_screen
+
+	la 	$s0, procesar_entrada.opciones
+	la 	$a0, info_tecla_salir
+	jal 	print_string
+	jal 	read_character
+	sb 	$v0, 0($s0)
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, str_tecla_izquierda
+	jal 	print_string
+	jal 	read_character
+	sb 	$v0, 8($s0)
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, str_tecla_derecha
+	jal 	print_string
+	jal 	read_character
+	sb 	$v0, 16($s0)
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, str_tecla_abajo
+	jal 	print_string
+	jal 	read_character
+	sb 	$v0, 24($s0)
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, str_tecla_rotar
+	jal 	print_string
+	jal 	read_character
+	sb 	$v0, 32($s0)
+
+	lw	$ra, 0($sp)
+	lw	$s0, 4($sp)
+	addiu	$sp, $sp, 8
+	jr	$ra
+
+
+
 edita_conf:
 	addiu	$sp, $sp, -4
 	sw	$ra, 0($sp)
@@ -1373,15 +1463,16 @@ B31_2:	jal 	info_actual
 	jal	print_string
 	jal	read_character
 	beq	$v0, '2', B31_1		# if (opc == '2') velocidad
-	beq 	$v0, '3', B31_5		# if (opc == '3') salir
+	beq 	$v0, '3', B31_3		# if (opc == '3') teclas
+	beq 	$v0, '4', B31_5		# if (opc == '3') teclas
 	bne	$v0, '1', B31_4		# if (opc != '1') mostrar error
 	jal 	calcula_campo
 	j 	B31_2
 
-B31_1:
-	jal 	calcula_cambio_velocidad
+B31_1:	jal 	calcula_cambio_velocidad
 	j 	B31_2
-
+B31_3:	jal 	calcula_teclas
+	j 	B31_2
 B31_4:	la	$a0, str002
 	jal	print_string		# print_string("\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n")
 	jal	read_character		# read_character()
