@@ -156,13 +156,25 @@ lw	$a0, pieza_actual_x		#Bien
 ```
 
 #### Completando líneas:
-
+Comprobar si habiamos completado una/varias linea/as no ha sido complejo, solo eran 2 bucles for anidados, que para cada posicion `y` de la altura de la pieza teniamos que comprobar si habia algun pixel vacio en toda la anchura del campo, silo habia actualizabamos el marcador con un +10.
 
 
 #### Eliminando líneas:
-
+Esta funcion ha sido mas compleja de implementar, ya que estabamos haciendo un bucle for ascendente en vez de descendente, por lo que aunque eliminabamos la linea que deseabamos la ultima no eramos capaces de ponerle un '\0' para elininarla tambien.
 
 
 #### Ritmo de caída:
 Esta función no es difícil de implementar, solamente hay que hacer que en vez de trabajar con un numero fijo trabajes con una variable global que vas modificando, para hacerlo mas fácil he implementado un procedimiento llamado `calcula_tiempo` que sin tener que pasarle nada coje el valor del tiempo calcula el 10% y se lo resta, después lo actualiza. Ya que así es mas fácil de entender el código. Una vez hecho esto lo que hay que hacer es en el contador cada vez que sumas un punto calcular si la puntuación es múltiplo de 50, en caso de que lo sea se llama al procedimiento y aumentamos la velocidad de juego.
 Una cosa que no habíamos pensado y que al repetir el juego varias veces es que en la función `jugar_partida`, cuando inicializas el marcador a 0 también tienes que inicialalizar el tiempo a 1000, ya que sino, el tiempo después de acabar una partida no se inicializa y mantiene la velocidad de la partida anterior.
+
+## 1.5.3 Funcionalidad opcional (hasta 1,5 puntos adicionales)
+
+
+#### Configuración:
+Para implementar esta funcion lo primero ha sido añadir a las librerias del sistema las funciones:
+* read_integer
+* print_integer
+
+Despues hemos añadido al menu la opcion de llamar a la funcion para editar la configuracion, esta fucnion es un `do .. while` que monstrara un menu similar al del tetris que se usara para llamar a las funciones encargadas de editar las diferentes opciones.
+Para poder comprarar que los valores del `campo` no sean nunca superiores a los de `pantalla` los hemos puesto globales.
+Las funciones que modifican los valores son similares todas, limpian la pantalla, piden el valor a actualizar, comprueban que es valido tanto al alza como a la baja y en caso de que sea valido lo guardan.

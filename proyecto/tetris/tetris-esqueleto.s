@@ -115,7 +115,7 @@ procesar_entrada.opciones:
 	.word	tecla_rotar
 
 str000:
-	.asciiz		"Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opcion:\n"
+	.asciiz		"Tetris\n\n 1 - Jugar\n 2 - Salir\n 3 - Editar configuracion\n\nElige una opcion:\n"
 str001:
 	.asciiz		"\nAdios!\n"
 str002:
@@ -131,6 +131,25 @@ pieza_salir:
 	.word	4
 	.ascii "+-----------------++     GAME OVER   ++ Pulse una tecla ++-----------------+"
 
+campo_x:	.word 14
+campo_y:	.word 20
+pantalla_x:	.word 20
+pantalla_y:	.word 22
+
+
+str_newline:		.asciiz "\n"
+str_error:	.asciiz	"Valor incorrecto\n"
+
+str_tam_campo_x:	.asciiz	"Introduzca la x el tamaño del campo:  "
+str_tam_campo_y:	.asciiz	"Introduzca la y el tamaño del campo:  "
+str_vel_inicial:	.asciiz	"Introduzca la velocidad inicial: "
+
+info_tam_campo_x: 	.asciiz "El valor del campo en x es: "
+info_tam_campo_y: 	.asciiz "El valor del campo en y es: "
+info_vel_inicial: 	.asciiz "El valor de la velocidad es: "
+
+str_opcion_conf:
+	.asciiz		"Editar:\n\n 1 - Campo\n 2 - Velocidad\n 3 - Volver\n\nElige una opcion:\n"
 
 buffer:	.space 256	#buffer para integer_to_string
 
@@ -855,13 +874,13 @@ jugar_partida:
 	sw	$t1, 0($t0)	#valor de tiempo
 
 	la	$a0, pantalla
-	li	$a1, 20
-	li	$a2, 22
+	lw	$a1, pantalla_x
+	lw	$a2, pantalla_y
 	li	$a3, 32
 	jal	imagen_init		# imagen_init(pantalla, 20, 22, ' ')
 	la	$a0, campo
-	li	$a1, 14
-	li	$a2, 20
+	lw	$a1, campo_x
+	lw	$a2, campo_y
 	li	$a3, 0
 	jal	imagen_init		# imagen_init(campo, 14, 20, PIXEL_VACIO)
 	jal	nueva_pieza_actual	# nueva_pieza_actual()
@@ -1074,7 +1093,7 @@ B28_2:	bge	$s1, $s3, B28_3		# for (int x = 0; x < campo->ancho; ++x) {
 B28_3:	addi	$s0, $s0, -1		# y++
 	j	B28_0
 
-B28_1:	
+B28_1:
 	li	$s1, 0			# int x = 0
 	la	$t0, campo
 	lw	$s3, 0($t0)		# campo->ancho
@@ -1210,6 +1229,133 @@ B27_1:	lw	$ra, 0($sp)
 
 
 
+info_actual:
+	addiu	$sp, $sp, -4
+	sw	$ra, 0($sp)
+
+	jal 	clear_screen
+	la 	$a0, info_tam_campo_x
+	jal 	print_string
+	lw 	$a0, campo_x
+	jal 	print_integer
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, info_tam_campo_y
+	jal 	print_string
+	lw 	$a0, campo_y
+	jal 	print_integer
+	la 	$a0, str_newline
+	jal 	print_string
+
+	la 	$a0, info_vel_inicial
+	jal 	print_string
+	lw 	$a0, tiempo
+	jal 	print_integer
+	la 	$a0, str_newline
+	jal 	print_string
+
+	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
+	jr	$ra
+
+
+
+calcula_campo:
+	addiu	$sp, $sp, -8
+	sw	$ra, 4($sp)
+	sw	$s0, 0($sp)			# borrar
+
+	jal 	clear_screen
+B30_0:	la 	$a0, str_tam_campo_x		#
+	jal 	print_string
+	jal 	read_integer
+
+	lw 	$t0, pantalla_x
+	bge 	$v0, $t0, B30_0_1		# if(valor>0 and valor < pantalla_x)
+	li 	$t0, 4				# tam minimo para jugar
+	ble 	$v0, $t0, B30_0_1
+	sw 	$v0, campo_x
+	j 	B30_1
+B30_0_1:
+	la 	$a0, str_error
+	jal 	print_string
+	j 	B30_0
+
+B30_1:	la 	$a0, str_tam_campo_y		#
+	jal 	print_string
+	jal 	read_integer
+	lw 	$t0, pantalla_y
+	bge 	$v0, $t0, B30_1_1 		# # if(valor>0 and valor < pantalla_y)
+	li 	$t0, 8				# tam minimo para jugar
+	ble 	$v0, $t0, B30_1_1
+	sw 	$v0, campo_y
+	j 	B30_3
+B30_1_1:
+	la 	$a0, str_error
+	jal 	print_string
+	j 	B30_1
+
+B30_3:	lw	$s0, 0($sp)
+	lw	$ra, 4($sp)
+	addiu	$sp, $sp, 8
+	jr	$ra
+
+calcula_cambio_velocidad:
+	addiu	$sp, $sp, -4
+	sw	$ra, 0($sp)
+
+	jal 	clear_screen
+B32_0:	la 	$a0, str_vel_inicial		#
+	jal 	print_string
+	jal 	read_integer
+
+	li 	$t0, 5000
+	bge 	$v0, $t0, B32_0_1		# if(valor>10 and valor < 5000)
+	li 	$t0, 10				# tam minimo para jugar
+	ble 	$v0, $t0, B32_0_1
+	sw 	$v0, tiempo
+	j 	B32_1
+B32_0_1:
+	la 	$a0, str_error
+	jal 	print_string
+	j 	B32_0
+
+B32_1:	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
+	jr	$ra
+
+
+
+edita_conf:
+	addiu	$sp, $sp, -4
+	sw	$ra, 0($sp)
+
+B31_2:	jal 	info_actual
+	la	$a0, str_opcion_conf
+	jal	print_string
+	jal	read_character
+	beq	$v0, '2', B31_1		# if (opc == '2') velocidad
+	beq 	$v0, '3', B31_5		# if (opc == '3') salir
+	bne	$v0, '1', B31_4		# if (opc != '1') mostrar error
+	jal 	calcula_campo
+	j 	B31_2
+
+B31_1:
+	jal 	calcula_cambio_velocidad
+	j 	B31_2
+
+B31_4:	la	$a0, str002
+	jal	print_string		# print_string("\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n")
+	jal	read_character		# read_character()
+	j	B31_2
+
+B31_5:	lw	$ra, 0($sp)
+	addiu	$sp, $sp, 4
+	jr	$ra
+
+
+
 	.globl	main
 main:					# ($a0, $a1) = (argc, argv)
 	addiu	$sp, $sp, -4
@@ -1219,6 +1365,7 @@ B23_2:	jal	clear_screen		# clear_screen()
 	jal	print_string		# print_string("Tetris\n\n 1 - Jugar\n 2 - Salir\n\nElige una opcion:\n")
 	jal	read_character		# char opc = read_character()
 	beq	$v0, '2', B23_1		# if (opc == '2') salir
+	beq 	$v0, '3', B23_4		# if (opc == '3') funcion editar configuracion
 	bne	$v0, '1', B23_5		# if (opc != '1') mostrar error
 	jal	jugar_partida		# jugar_partida()
 	j	B23_2
@@ -1227,6 +1374,8 @@ B23_1:	la	$a0, str001
 	li	$a0, 0
 	jal	mips_exit		# mips_exit(0)
 	j	B23_2
+B23_4:	jal 	edita_conf		# edita_conf()
+	j 	B23_2
 B23_5:	la	$a0, str002
 	jal	print_string		# print_string("\nOpcion incorrecta. Pulse cualquier tecla para seguir.\n")
 	jal	read_character		# read_character()
@@ -1251,6 +1400,12 @@ print_string:
 	jr	$ra
 
 
+print_integer:
+	li	$v0, 1
+	syscall
+	jr	$ra
+
+
 get_time:
 	li	$v0, 30
 	syscall
@@ -1261,6 +1416,12 @@ get_time:
 
 read_character:
 	li	$v0, 12
+	syscall
+	jr	$ra
+
+
+read_integer:
+	li	$v0, 5
 	syscall
 	jr	$ra
 
