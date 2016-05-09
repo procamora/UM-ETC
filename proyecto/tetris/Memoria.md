@@ -1,9 +1,27 @@
 
 
 
+- [Parte 1. Ejercicios de traducción (4 puntos)](#parte-1-ejercicios-de-traduccin-4-puntos)
+	- [imagen_set_pixel:](#imagensetpixel)
+	- [imagen_clean:](#imagenclean)
+	- [imagen_init:](#imageninit)
+	- [imagen_copy:](#imagencopy)
+	- [imagen_dibuja_imagen:](#imagendibujaimagen)
+	- [imagen_dibuja_imagen_rotada:](#imagendibujaimagenrotada)
+	- [nueva_pieza_actual:](#nuevapiezaactual)
+	- [intentar_movimiento:](#intentarmovimiento)
+	- [intentar_rotar_pieza_actual:](#intentarrotarpiezaactual)
+	- [bajar_pieza_actual:](#bajarpiezaactual)
+- [Parte 2. Ejercicios de implementación (6 puntos)](#parte-2-ejercicios-de-implementacin-6-puntos)
+	- [Marcador de puntuación:](#marcador-de-puntuacin)
+	- [Final de la partida:](#final-de-la-partida)
+	- [Completando líneas:](#completando-lneas)
+	- [Eliminando líneas:](#eliminando-lneas)
+	- [Ritmo de caída:](#ritmo-de-cada)
+- [1.5.3 Funcionalidad opcional (hasta 1,5 puntos adicionales)](#153-funcionalidad-opcional-hasta-15-puntos-adicionales)
+	- [Configuración:](#configuracin)
 
-
-##Parte 1. Ejercicios de traducción (4 puntos)
+## Parte 1. Ejercicios de traducción (4 puntos)
 
 En general esta primera parte no ha tenido casi dificultad, ya que solo era pasar código de C a mips.
 La parte mas problemática ha sido la de hacer las llamadas a las funciones de forma correcta para asegurarse de que estaban correctamente implementadas.
@@ -136,7 +154,7 @@ Al probar intentar_movimiento comprobé que ya era totalmente funcional el tetri
 Al probar intentar_movimiento comprobé que ya era totalmente funcional el tetris y que podía rotar, mover a derecha e izquierda y baja la pieza, por lo que no me hizo falta revisar esta función
 
 
-##Parte 2. Ejercicios de implementación (6 puntos)
+## Parte 2. Ejercicios de implementación (6 puntos)
 
 
 #### Marcador de puntuación:
