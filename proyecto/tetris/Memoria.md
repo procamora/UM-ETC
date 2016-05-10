@@ -88,9 +88,9 @@ jal imagen_print
 
 
 #### imagen_dibuja_imagen_rotada:
-No ha tenido ninguna dificultad, el codigo era basicamente el mismo, solo habia que hacer unas sumas y restas en algunos parametros de la funcion `imagen_set_pixel`
+No ha tenido ninguna dificultad, el código era básicamente el mismo, solo había que hacer unas sumas y restas en algunos parámetros de la función `imagen_set_pixel`
 
-La llamada a la funcion para comprobar si funcionaba correctamente ha sido:
+La llamada a la función para comprobar si funcionaba correctamente ha sido:
 
 ```
 la $a0, pieza_actual	#dst
@@ -174,8 +174,9 @@ Para implementar esta función lo primero ha sido añadir a las librerías del s
 
 Después hemos añadido al menú la opción de llamar a la función para editar la configuración, esta funciona es un `do .. while` que mostrara un menú similar al del tetris que se usara para llamar a las funciones encargadas de editar las diferentes opciones.
 Para poder comparar que los valores del `campo` no sean nunca superiores a los de `pantalla` los hemos puesto globales.
+
 Las funciones que modifican los valores son similares todas, limpian la pantalla, piden el valor a actualizar, comprueban que es valido tanto al alza como a la baja y en caso de que sea valido lo guardan.
 
-Tambien ha habido que modificar el valor de `pieza_actual_x` para que sea `campo_x div 2`, ya que sino no sale centrada cuando cambias el valor del campo
+También ha habido que modificar el valor de `pieza_actual_x` para que sea `campo_x div 2`, ya que sino no sale centrada cuando cambias el valor del campo
 
-Para la modificación de de las teclas solo ha habido que saber en que posicion estaban guardadas del diccionario `procesar_entrada.opciones`, y una vez localizadas las posiciones son `sb` introducir las nuevas teclas.
+Para la modificación de de las teclas solo ha habido que saber en que posición estaban guardadas del diccionario `procesar_entrada.opciones`, y una vez localizadas las posiciones son `sb` introducir las nuevas teclas.
