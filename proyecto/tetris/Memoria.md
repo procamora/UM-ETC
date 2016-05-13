@@ -119,32 +119,32 @@ jal imagen_print
 
 
 #### intentar_movimiento:
-En esta tuve que corregir el mismo fallo que en `nueva_pieza_actual` por usar `lw pieza_actual_x`
+En esta tuvimos que corregir el mismo fallo que en `nueva_pieza_actual` por usar `lw pieza_actual_x`
 
-A partir de aquí ya no tuve que implementar yo código para llamar a la función, ya el tetris puede funcionar con el código del main
+A partir de aquí ya no tuvimos que implementar código para llamar a la función, ya que el tetris puede funcionar con el código del main
 
 
 
 #### intentar_rotar_pieza_actual:
-Al probar intentar_movimiento comprobé que ya era totalmente funcional el tetris y que podía rotar, mover a derecha e izquierda y baja la pieza, por lo que no me hizo falta revisar esta función
+Al probar intentar_movimiento comprobamos que ya era totalmente funcional el tetris y que podía rotar, mover a derecha e izquierda y baja la pieza, por lo que no nos hizo falta revisar esta función.
 
 
 #### bajar_pieza_actual:
-Al probar intentar_movimiento comprobé que ya era totalmente funcional el tetris y que podía rotar, mover a derecha e izquierda y baja la pieza, por lo que no me hizo falta revisar esta función
+Al probar intentar_movimiento comprobamos que ya era totalmente funcional el tetris y que podía rotar, mover a derecha e izquierda y baja la pieza, por lo que no nos hizo falta revisar esta función.
 
 
 ## Parte 2. Ejercicios de implementación (6 puntos)
 
 
 #### Marcador de puntuación:
-El principal problema de esta función ha sido entender exactamente como había que implementarlo, ya que no entienda bien como hacer la función  `imagen_dibuja_cadena`, pensaba que tenia que llamar a la función `print_character` en vez de a `imagen_set_pixel`. Una vez conseguido hacer esta función correctamente inicializar el marcador y actualizarlo ha sido cosa trivial, tampoco ha sido complejo usar la función `integer_to_string`.
+El principal problema de esta función ha sido entender exactamente como había que implementarlo, ya que no entiendamos bien como hacer la función  `imagen_dibuja_cadena`, pensabamos que teniamos que llamar a la función `print_character` en vez de a `imagen_set_pixel`. Una vez conseguido hacer esta función correctamente inicializar el marcador y actualizarlo ha sido cosa trivial, tampoco ha sido complejo usar la función `integer_to_string`.
 
 
 
 
 
 #### Final de la partida:
-Esta implementación ha sido fácil de implemente, solo hay que poner un `if` en la función `bajar_pieza_actual` para comprobar si puedes volver hacer un movimiento con la pieza_actual.
+Esta implementación ha sido fácil de implementar, solo habia que poner un `if` en la función `bajar_pieza_actual` para comprobar si puedes volver hacer un movimiento con la pieza_actual.
 El único problema que hemos tenido es que al generar una nueva pieza, se genera en la misma coordenada `y` de donde se puso la anterior, y si esa posición `y` estaba en un lateral el programa podía detectar que no podía bajar la ficha y llamaba a `acabar_partida`
 
 ```
